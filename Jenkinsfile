@@ -8,7 +8,8 @@ pipeline {
 
         GIT_CREDENTIALS_ID = 'github-pat'
         GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
-        GIT_BRANCH = 'pipeline'    }
+        GIT_BRANCH = 'pipeline'      
+        }
 
     stages {
         stage('Checkout Code') {
@@ -59,4 +60,28 @@ pipeline {
         }
 
         stage('Lint Code') {
-        
+            steps {
+                script {
+                    // Run flake8 for linting
+                    sh "${VENV_DIR}/bin/flake8 src/ tests/"
+                }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    // Clean the virtual environment
+                    sh "rm -rf ${VENV_DIR}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up virtual environment after pipeline run
+            sh "rm -rf ${VENV_DIR}"
+        }
+    }
+}
