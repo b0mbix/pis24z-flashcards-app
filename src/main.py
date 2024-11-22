@@ -2,7 +2,6 @@ def func(x, y):
     return x + y
 
 
-print("Hello world") 
 
 
-
+print("Hello world")
