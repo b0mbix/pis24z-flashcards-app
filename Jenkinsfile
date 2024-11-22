@@ -8,7 +8,7 @@ pipeline {
         GIT_CREDENTIALS_ID = 'github-pat'
         GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
         GIT_BRANCH = 'pipeline'
-        EMAIL_RECIPIENT = 'm3.brzezinski@gmail.com'
+        EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
     stages {
@@ -120,17 +120,16 @@ pipeline {
         failure {
             script {
                 // Send email in case of failure
-                emailext(
-                    subject: "Jenkins Pipeline Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+
+                mail to: "${EMAIL_RECIPIENT}",
+                    subject: 'Pipeline Error',
                     body: """
                         The Jenkins pipeline *${env.JOB_NAME}* failed.
                         Please check the details:
                         Build URL: ${env.BUILD_URL}
                         Jenkins Job: ${env.JOB_NAME}
                         Build Number: ${env.BUILD_NUMBER}
-                    """,
-                    to: "${EMAIL_RECIPIENT}"
-                )
+                    """
             }
         }
     }
