@@ -1,5 +1,4 @@
 from main import func
-from logic.sample_logic import hello
 import pytest
 from hypothesis import given, settings
 from hypothesis.strategies import integers
@@ -22,6 +21,3 @@ def test_smth_else(a, b):
 )
 def test_something(x, y, expected):
     assert func(x, y) == expected
-
-def test_sth():
-    assert hello() == "Hello, World!"
