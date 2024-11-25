@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        VENV_DIR = 'venv'
+        VENV_DIR = '.venv'
         REQUIREMENTS = 'requirements.txt'
         PYTHONPATH = "${env.WORKSPACE}/src"
         GIT_CREDENTIALS_ID = 'github-pat'
         GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
-        GIT_BRANCH = 'pipeline'
+        GIT_BRANCH = 'PIS-7-skonfigurowanie-nexusa'
         EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
@@ -21,6 +21,7 @@ pipeline {
             }
         }
 
+
         stage('Install Python3-venv') {
             steps {
                 script {
@@ -31,6 +32,23 @@ pipeline {
                         sudo apt-get install -y python3-venv
                     fi
                     '''
+                }
+            }
+        }
+
+        stage('Check docker') {
+            steps {
+                script {
+                    sh 'docker --version'
+                    sh 'docker compose down'
+                    try {
+                        sh 'docker compose up --build -d'
+                    } catch (Exception e) {
+                        echo "Error occurred during docker compose up: ${e.getMessage()}"
+                    } finally {
+                        // Clean up containers in any case
+                        sh 'docker compose down'
+                    }
                 }
             }
         }
@@ -61,7 +79,8 @@ pipeline {
             steps {
                 script {
                     // Install dependencies from requirements.txt with caching
-                    sh "${VENV_DIR}/bin/pip install --cache-dir=${WORKSPACE}/.cache -r ${REQUIREMENTS}"
+                    sh "${VENV_DIR}/bin/pip install -r ${REQUIREMENTS}"
+
                 }
             }
         }
