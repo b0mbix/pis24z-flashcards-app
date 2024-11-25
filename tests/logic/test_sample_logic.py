@@ -1,5 +1,4 @@
 from logic.sample_logic import hello
-import pytest
 
 
 def test_hello():
