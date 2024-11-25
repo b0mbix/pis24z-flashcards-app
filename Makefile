@@ -19,7 +19,7 @@ install: $(VENV_DIR)/bin/activate
 # Uruchamianie testów z ustawionym PYTHONPATH
 .PHONY: test
 test: install
-	PYTHONPATH=$(PWD)/src $(VENV_DIR)/bin/pytest tests/
+	PYTHONPATH=src $(VENV_DIR)/bin/pytest tests/
 
 # Uruchamianie aplikacji
 .PHONY: run
