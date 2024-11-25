@@ -39,11 +39,16 @@ pipeline {
         stage('Check docker') {
             steps {
                 script {
+                    // Ensure Python 3 is available
                     sh 'docker --version'
                     sh 'docker compose down'
                     try {
+                        // Ensure Docker is available
+                        
+                        // Build and start containers
                         sh 'docker compose up --build -d'
                     } catch (Exception e) {
+                        // Handle any errors during `docker compose up --build`
                         echo "Error occurred during docker compose up: ${e.getMessage()}"
                     } finally {
                         // Clean up containers in any case
@@ -80,7 +85,6 @@ pipeline {
                 script {
                     // Install dependencies from requirements.txt with caching
                     sh "${VENV_DIR}/bin/pip install -r ${REQUIREMENTS}"
-
                 }
             }
         }
@@ -107,7 +111,7 @@ pipeline {
             steps {
                 script {
                     // Run flake8 for linting
-                    sh "${VENV_DIR}/bin/flake8 src/ tests/"
+                    sh "${VENV_DIR}/bin/flake8 src/ tests/ --max-line-length=120"
                 }
             }
         }
