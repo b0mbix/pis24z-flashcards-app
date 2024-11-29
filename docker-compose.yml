@@ -1,0 +1,51 @@
+services:
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flashcards_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  flutter:
+    build:
+      context: ./src/gui/flutter
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./src/gui/flutter:/app
+    command: flutter run -d web-server
+
+  logic:
+    build:
+      context: ./src/logic
+      dockerfile: Dockerfile
+    environment:
+      DJANGO_SETTINGS_MODULE: flashcards.settings
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/logic:/app
+    command: python manage.py runserver 0.0.0.0:8000
+
+  nexus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      NEXUS_ADMIN_PASSWORD: password123
+    volumes:
+      - nexus-data:/nexus-data
+
+volumes:
+  db_data:
+  nexus-data:
