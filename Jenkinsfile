@@ -7,7 +7,7 @@ pipeline {
         PYTHONPATH = "${env.WORKSPACE}/src"
         GIT_CREDENTIALS_ID = 'github-pat'
         GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
-        GIT_BRANCH = 'PIS-7-skonfigurowanie-nexusa'
+        GIT_BRANCH = 'master'
         EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
