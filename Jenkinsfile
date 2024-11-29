@@ -12,6 +12,20 @@ pipeline {
     }
 
     stages {
+        
+        
+        stage('Checkout Code') {
+            steps {
+                script {
+                    retry(3) {
+                        // Clone the GitHub repository to the workspace with credentials
+                        git url: "${GIT_REPOSITORY_URL}", branch: "${GIT_BRANCH}", credentialsId: "${GIT_CREDENTIALS_ID}"
+                    }
+                }
+            }
+        }
+
+        
         stage('Check Python Version') {
             steps {
                 script {
@@ -53,17 +67,6 @@ pipeline {
                     } finally {
                         // Clean up containers in any case
                         sh 'docker compose down'
-                    }
-                }
-            }
-        }
-
-        stage('Checkout Code') {
-            steps {
-                script {
-                    retry(3) {
-                        // Clone the GitHub repository to the workspace with credentials
-                        git url: "${GIT_REPOSITORY_URL}", branch: "${GIT_BRANCH}", credentialsId: "${GIT_CREDENTIALS_ID}"
                     }
                 }
             }
