@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!src/gui/flashcards/lib/
 lib64/
 parts/
 sdist/
