@@ -1,3 +1,4 @@
+import 'package:flashcards/core/theme.dart';
 import 'package:flashcards/injection_container.dart';
 import 'package:flashcards/presentation/home_page.dart';
 import 'package:flutter/material.dart';
@@ -14,20 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flashcards',
-      theme: ThemeData(
-          brightness: Brightness.dark,
-          inputDecorationTheme: InputDecorationTheme(
-              filled: true,
-              fillColor: Colors.white,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
-                ),
-              ),
-              labelStyle: const TextStyle(color: Colors.black, fontSize: 20))),
+      theme: theme,
       home: const HomePage(),
     );
   }
