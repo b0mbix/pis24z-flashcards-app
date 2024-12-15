@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final response = await getIt<Dio>().get("/eraSingleSeson"); //MOCK
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) { //MOCK - should be 200
         final data = response.data;
         setState(() {
           sets = data;
