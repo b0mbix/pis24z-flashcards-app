@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       } else {
         print("An error occured");
       }
-    } on DioException catch (e) {
+    } on DioException {
       print("An error occured");
     }
   }
