@@ -8,9 +8,9 @@ class MyFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-                style: TextStyle().copyWith(color: Colors.black),
+                style: const TextStyle().copyWith(color: Colors.black),
                 decoration: InputDecoration(
-                  border: UnderlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                   labelText: name,
                 ),
               );

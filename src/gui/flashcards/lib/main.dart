@@ -1,7 +1,9 @@
+import 'package:flashcards/injection_container.dart';
 import 'package:flashcards/presentation/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  setup();
   runApp(const MyApp());
 }
 

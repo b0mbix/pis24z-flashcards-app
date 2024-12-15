@@ -1,5 +1,5 @@
 import 'package:flashcards/presentation/home_page.dart';
-import 'package:flashcards/presentation/my_form_field.dart';
+import 'package:flashcards/presentation/common/my_form_field.dart';
 import 'package:flutter/material.dart';
 
 class AddSet extends StatelessWidget {
@@ -19,30 +19,30 @@ class AddSet extends StatelessWidget {
           ),
         ),
         actions: [ElevatedButton(
-                  child: Text("Zapisz"),
+                  child: const Text("Zapisz"),
                   onPressed: () {Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => HomePage()));},
+                    context, MaterialPageRoute(builder: (context) => const HomePage()));},
                 ),
-          SizedBox(
+          const SizedBox(
             width: 50,
           )],
         leadingWidth: 300,
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
-      backgroundColor: Color.fromRGBO(28, 28, 28, 1),
+      backgroundColor: const Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Row(
               children: [
-                Expanded(child: MyFormField("Nazwa zestawu")),
+                const Expanded(child: MyFormField("Nazwa zestawu")),
                 Expanded(child: Container())
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
+            const Padding(
+              padding: EdgeInsets.only(top: 20),
               child: Divider(color: Colors.purple,),
             ),
             Expanded(
@@ -53,7 +53,7 @@ class AddSet extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(child: MyFormField("Pojęcie ${index+1}")),
-                      SizedBox(width: 30,),
+                      const SizedBox(width: 30,),
                       Expanded(child: MyFormField("Definicja ${index+1}"))
                     ],
                   ),
