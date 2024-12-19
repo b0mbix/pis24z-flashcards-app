@@ -13,6 +13,22 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200" #API HTTP
+      - "9300:9300" #komunikacja wewnętrzna elasticsearch
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
   flutter:
     build:
       context: ./src/gui/flutter
@@ -46,6 +62,8 @@ services:
     volumes:
       - nexus-data:/nexus-data
 
+
 volumes:
   db_data:
   nexus-data:
+  es_data:
