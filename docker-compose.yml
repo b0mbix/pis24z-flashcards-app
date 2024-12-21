@@ -15,7 +15,7 @@ services:
 
   flutter:
     build:
-      context: ./src/gui/flutter
+      context: ./src/gui
       dockerfile: Dockerfile
     ports:
       - "8083:8080"
