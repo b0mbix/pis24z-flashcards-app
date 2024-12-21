@@ -56,18 +56,10 @@ pipeline {
                     // Ensure Python 3 is available
                     sh 'docker --version'
                     sh 'docker compose down'
-                    try {
-                        // Ensure Docker is available
-                        
-                        // Build and start containers
-                        sh 'docker compose up --build -d'
-                    } catch (Exception e) {
-                        // Handle any errors during `docker compose up --build`
-                        echo "Error occurred during docker compose up: ${e.getMessage()}"
-                    } finally {
-                        // Clean up containers in any case
-                        sh 'docker compose down'
-                    }
+
+                    sh 'docker compose up --build -d'
+                    sh 'docker compose down'
+
                 }
             }
         }
@@ -96,6 +88,7 @@ pipeline {
             steps {
                 script {
                     // Run tests with PYTHONPATH set correctly
+                    sh "echo ${env.WORKSPACE}/src"
                     sh "PYTHONPATH=${env.WORKSPACE}/src ${VENV_DIR}/bin/pytest tests/"
                 }
             }
