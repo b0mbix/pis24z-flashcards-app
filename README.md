@@ -4,9 +4,21 @@ Aplikacja quizowa/fiszkowa pozwalająca na naukę w trybie spaced repetition, do
 
 ## Instrukcja uruchomienia
 ### Frontend
-1. Instalacja Fluttera https://docs.flutter.dev/get-started/install
-2. Przejście do katalogu w którym Flutter został zainstalowany
-3. W terminalu "git checkout v3.4.4"
-4. Przejście do katalogu gui/flashcards
-5. W terminalu "flutter pub get"
-6. W terminalu "flutter run"
+1. Zainstaluj Fluttera: https://docs.flutter.dev/get-started/install
+2. Przejdź do katalogu `gui/flashcards`:
+```
+cd gui/flashcards
+```
+3. Pobierz potrzebne rzeczy i uruchom Fluttera:
+```
+flutter pub get
+flutter run
+```
+
+
+Jeżeli wystąpią problemy, spróbuj przejść do wersji 3.4.4:
+1. Przejdź do katalogu instalacji Fluttera
+2. Zmień branch projektu:
+```
+git checkout v3.4.4
+```
