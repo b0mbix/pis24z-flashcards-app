@@ -22,3 +22,28 @@ Jeżeli wystąpią problemy, spróbuj przejść do wersji 3.4.4:
 ```
 git checkout v3.4.4
 ```
+
+
+### backend
+(Należy uruchomić przed uruchomieniem fluttera)
+1. Przejdź do katalogu `logic`:
+```
+cd logic
+
+```
+2. przygotuj wirtualne środowisko
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+3. uruchom django:
+```
+python3 manage.py runserver
+```
+
+3. po zakończeniu programu wychodzimy ze środowiska:
+```
+deactivate
+```
