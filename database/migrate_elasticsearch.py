@@ -12,8 +12,10 @@ pg_conn = psycopg2.connect(
 pg_cursor = pg_conn.cursor()
 
 es = Elasticsearch(
-    [{'host': 'localhost', 'port': 9200, 'scheme': 'http'}]
+    [{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
+    basic_auth=('elastic', 'password')
 )
+
 
 
 def create_indices():
