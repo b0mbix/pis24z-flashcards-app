@@ -1,10 +1,8 @@
-// add_set.dart
 import 'package:dio/dio.dart';
 import 'package:flashcards/injection_container.dart';
 import 'package:flashcards/presentation/home_page.dart';
 import 'package:flashcards/presentation/common/my_form_field.dart';
 import 'package:flutter/material.dart';
-import 'second_screen.dart'; // Import the second screen here
 
 class AddSet extends StatefulWidget {
   const AddSet({super.key});
@@ -132,13 +130,12 @@ class _AddSetState extends State<AddSet> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the second screen when the button is pressed
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SecondScreen()),
+                      MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   },
-                  child: const Text("Go to Second Screen"),
+                  child: const Text("Go to back to Home page"),
                 ),
               ],
             )),

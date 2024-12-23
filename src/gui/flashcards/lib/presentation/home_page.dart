@@ -15,33 +15,43 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    
     super.initState();
     fetchData();
   }
 
-  // Fetch data from the Django backend (GET request)
+
+  
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("http://127.0.0.1:8000/eraSingleSeson/"); // Use the correct URL with a trailing slash
-      if (response.statusCode == 201) { // MOCK - should be 200 in real scenario
+      final response = await getIt<Dio>().get("http://127.0.0.1:8000/api/example/");
+      
+      if (response.statusCode == 200) { 
         final data = response.data;
-        setState(() {
-          sets = data;
-        });
+
+        if (data is List) {
+          setState(() {
+            sets = List.from(data);
+          });
+        } else {
+          print("Unexpected data format: The response is not a List");
+        }
       } else {
         print("An error occurred while fetching data");
       }
-    } on DioException {
-      print("An error occurred while fetching data");
+    } catch (e) {
+      print("Error fetching data: $e");
     }
   }
 
-  // Send data to the Django backend (POST request)
+
+
+
   Future<void> sendDataToDjango(Map<String, dynamic> data) async {
     try {
       final response = await getIt<Dio>().post(
-        "/add-flashcard-set/",  // Django endpoint to accept POST request
-        data: data,  // Data to send in the POST request
+        "/add-flashcard-set/",  
+        data: data, 
       );
 
       if (response.statusCode == 201) {
@@ -53,6 +63,9 @@ class _HomePageState extends State<HomePage> {
       print("Error: ${e.message}");
     }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,39 +95,33 @@ class _HomePageState extends State<HomePage> {
         ],
         leadingWidth: 300,
         backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color.fromRGBO(28, 28, 28, 1),
+      backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
-        padding: const EdgeInsets.only(top: 40),
-        child: ListView.separated(
-          itemCount: sets.isEmpty ? 0 : sets.length,  // Adjust to use actual length
-          separatorBuilder: (context, index) => const Divider(
-            color: Colors.purple,
-          ),
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: ListTile(
-              title: Text(
-                "Zestaw ${index + 1} - ${sets[index]["Player"]}",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.white),
+        padding: EdgeInsets.only(top: 40),
+        child: sets.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: sets.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('${sets[index]['name']} selected');
+                      },
+                      child: Text(
+                        sets[index]['name'],
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                // When tapping on a set, send data to Django (POST request)
-                Map<String, dynamic> flashcardSetData = {
-                  "Player": sets[index]["Player"],  // Example player data
-                  "setName": "Set ${index + 1}",    // Example set name
-                };
-
-                // Call the sendDataToDjango function to send the data
-                sendDataToDjango(flashcardSetData);
-              },
-            ),
-          ),
-        ),
       ),
     );
   }
