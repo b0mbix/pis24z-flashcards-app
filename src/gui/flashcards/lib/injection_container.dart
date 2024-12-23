@@ -9,7 +9,11 @@ void setup() {
 
 Dio _createDio() {
   final dio = Dio(BaseOptions(
-    baseUrl: "https://api.sampleapis.com/baseball", //MOCK
+    //baseUrl: "https://api.sampleapis.com/baseball", //MOCK
+    baseUrl: "http://127.0.0.1:8000/", // Replace with your backend URL
+
   ));
   return dio;
 }
+
+

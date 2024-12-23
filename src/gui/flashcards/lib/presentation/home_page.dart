@@ -15,26 +15,57 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    
     super.initState();
     fetchData();
   }
 
+
+  
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("/eraSingleSeson"); //MOCK
-
-      if (response.statusCode == 201) { //MOCK - should be 200
+      final response = await getIt<Dio>().get("/api/example/");  //MOCK
+      
+      if (response.statusCode == 200) { 
         final data = response.data;
-        setState(() {
-          sets = data;
-        });
+
+        if (data is List) {
+          setState(() {
+            sets = List.from(data);
+          });
+        } else {
+          print("Unexpected data format: The response is not a List");
+        }
       } else {
-        print("An error occured");
+        print("An error occurred while fetching data");
       }
-    } on DioException {
-      print("An error occured");
+    } catch (e) {
+      print("Error fetching data: $e");
     }
   }
+
+
+
+
+  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
+    try {
+      final response = await getIt<Dio>().post(
+        "/add-flashcard-set/",  
+        data: data, 
+      );
+
+      if (response.statusCode == 201) {
+        print("Data sent successfully: ${response.data}");
+      } else {
+        print("An error occurred while sending data");
+      }
+    } on DioException catch (e) {
+      print("Error: ${e.message}");
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         leading: Center(
           child: Text(
-            "Twoje zestawy",
+            "Your sets",
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -51,37 +82,47 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton.filled(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const AddSet()));
-              },
-              icon: const Icon(Icons.add)),
-          const SizedBox(
-            width: 50,
-          )
+            onPressed: () {
+              // Navigate to AddSet screen when pressed
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddSet()),
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+          const SizedBox(width: 50),
         ],
         leadingWidth: 300,
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color.fromRGBO(28, 28, 28, 1),
+      backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
-        padding: const EdgeInsets.only(top: 40),
-        child: ListView.separated(
-            itemCount: sets.isEmpty ? 0 : 5, //MOCK
-            separatorBuilder: (context, index) => const Divider(
-                  color: Colors.purple,
-                ),
-            itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Text(
-                    "Zestaw ${index + 1} - ${sets[index]["Player"]}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.white),
-                  ),
-                )),
+        padding: EdgeInsets.only(top: 40),
+        child: sets.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: sets.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        print('${sets[index]['name']} selected');
+                      },
+                      child: Text(
+                        sets[index]['name'],
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

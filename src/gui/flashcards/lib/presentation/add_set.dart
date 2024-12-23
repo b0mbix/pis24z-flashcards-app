@@ -12,9 +12,11 @@ class AddSet extends StatefulWidget {
 }
 
 class _AddSetState extends State<AddSet> {
-  Map setData = {"name": "", "cards": []};
-  Map<int, Map> cardsData =
-      {}; // If the TextFormFields are saved from top to bottom, a list instead of a map would be enough
+  Map<String, dynamic> setData = {
+    "name": "",
+    "cards": []
+  }; 
+  Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -23,7 +25,7 @@ class _AddSetState extends State<AddSet> {
       appBar: AppBar(
         leading: Center(
           child: Text(
-            "Dodaj nowy zestaw",
+            "Add new set",
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -32,7 +34,7 @@ class _AddSetState extends State<AddSet> {
         ),
         actions: [
           ElevatedButton(
-            child: const Text("Zapisz"),
+            child: const Text("Save"),
             onPressed: () async {
               formKey.currentState!.save();
               setData["cards"] =
@@ -40,9 +42,9 @@ class _AddSetState extends State<AddSet> {
 
               try {
                 final response = await getIt<Dio>()
-                    .post("/hitsCareer", data: setData); //MOCK
+                    .post("/api/add_flashcard_set/", data: setData);
 
-                if (response.statusCode == 200) {
+                if (response.statusCode == 201) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -74,7 +76,7 @@ class _AddSetState extends State<AddSet> {
                   children: [
                     Expanded(
                         child: MyFormField(
-                      name: "Nazwa zestawu",
+                      name: "Set name",
                       customOnSaved: (newValue) {
                         setData["name"] = newValue;
                       },
@@ -99,7 +101,7 @@ class _AddSetState extends State<AddSet> {
                           children: [
                             Expanded(
                                 child: MyFormField(
-                              name: "Pojęcie ${index + 1}",
+                              name: "Term ${index + 1}",
                               customOnSaved: (newValue) {
                                 if (cardsData[index] == null) {
                                   cardsData[index] = {"term": newValue};
@@ -113,7 +115,7 @@ class _AddSetState extends State<AddSet> {
                             ),
                             Expanded(
                                 child: MyFormField(
-                              name: "Definicja ${index + 1}",
+                              name: "Definition ${index + 1}",
                               customOnSaved: (newValue) {
                                 if (cardsData[index] == null) {
                                   cardsData[index] = {"definition": newValue};
@@ -127,7 +129,17 @@ class _AddSetState extends State<AddSet> {
                       ),
                     ),
                   ),
-                ))
+                )),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  child: const Text("Go to back to Home page"),
+                ),
               ],
             )),
       ),
