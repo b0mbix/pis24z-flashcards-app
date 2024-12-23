@@ -14,7 +14,6 @@ CREATE TABLE FlashcardSets (
     user_id INT REFERENCES Users(id),
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    category VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     views_count INT DEFAULT 0,
@@ -24,7 +23,7 @@ CREATE TABLE FlashcardSets (
 
 CREATE TABLE Flashcards (
     id SERIAL PRIMARY KEY,
-    set_id INT REFERENCES FlashcardSets(id) ON DELETE CASCADE
+    set_id INT REFERENCES FlashcardSets(id) ON DELETE CASCADE,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
