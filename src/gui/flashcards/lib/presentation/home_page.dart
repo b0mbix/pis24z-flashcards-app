@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
         ],
         leadingWidth: 300,
         backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
       ),
       backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
