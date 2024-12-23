@@ -12,8 +12,11 @@ class AddSet extends StatefulWidget {
 }
 
 class _AddSetState extends State<AddSet> {
-  Map setData = {"name": "", "cards": []};
-  Map<int, Map> cardsData = {};
+  Map<String, dynamic> setData = {
+    "name": "",
+    "cards": []
+  }; 
+  Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -41,7 +44,7 @@ class _AddSetState extends State<AddSet> {
                 final response = await getIt<Dio>()
                     .post("/api/add_flashcard_set/", data: setData);
 
-                if (response.statusCode == 200) {
+                if (response.statusCode == 201) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
