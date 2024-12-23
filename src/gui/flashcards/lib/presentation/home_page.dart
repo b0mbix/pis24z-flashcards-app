@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("http://127.0.0.1:8000/api/example/");  //MOCK
+      final response = await getIt<Dio>().get("/api/example/");  //MOCK
       
       if (response.statusCode == 200) { 
         final data = response.data;
