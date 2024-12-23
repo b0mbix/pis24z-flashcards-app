@@ -25,7 +25,7 @@ class _AddSetState extends State<AddSet> {
       appBar: AppBar(
         leading: Center(
           child: Text(
-            "Dodaj nowy zestaw",
+            "Add new set",
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -34,7 +34,7 @@ class _AddSetState extends State<AddSet> {
         ),
         actions: [
           ElevatedButton(
-            child: const Text("Zapisz"),
+            child: const Text("Save"),
             onPressed: () async {
               formKey.currentState!.save();
               setData["cards"] =
@@ -76,7 +76,7 @@ class _AddSetState extends State<AddSet> {
                   children: [
                     Expanded(
                         child: MyFormField(
-                      name: "Nazwa zestawu",
+                      name: "Set name",
                       customOnSaved: (newValue) {
                         setData["name"] = newValue;
                       },
@@ -101,7 +101,7 @@ class _AddSetState extends State<AddSet> {
                           children: [
                             Expanded(
                                 child: MyFormField(
-                              name: "Pojęcie ${index + 1}",
+                              name: "Term ${index + 1}",
                               customOnSaved: (newValue) {
                                 if (cardsData[index] == null) {
                                   cardsData[index] = {"term": newValue};
@@ -115,7 +115,7 @@ class _AddSetState extends State<AddSet> {
                             ),
                             Expanded(
                                 child: MyFormField(
-                              name: "Definicja ${index + 1}",
+                              name: "Definition ${index + 1}",
                               customOnSaved: (newValue) {
                                 if (cardsData[index] == null) {
                                   cardsData[index] = {"definition": newValue};

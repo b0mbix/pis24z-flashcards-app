@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         leading: Center(
           child: Text(
-            "Twoje zestawy",
+            "Your sets",
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
