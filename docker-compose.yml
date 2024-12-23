@@ -1,5 +1,5 @@
 services:
-  database:
+  postgres:
     build:
       context: ./database
       dockerfile: Dockerfile
