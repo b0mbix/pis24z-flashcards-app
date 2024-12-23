@@ -1,8 +1,10 @@
+// add_set.dart
 import 'package:dio/dio.dart';
 import 'package:flashcards/injection_container.dart';
 import 'package:flashcards/presentation/home_page.dart';
 import 'package:flashcards/presentation/common/my_form_field.dart';
 import 'package:flutter/material.dart';
+import 'second_screen.dart'; // Import the second screen here
 
 class AddSet extends StatefulWidget {
   const AddSet({super.key});
@@ -13,8 +15,7 @@ class AddSet extends StatefulWidget {
 
 class _AddSetState extends State<AddSet> {
   Map setData = {"name": "", "cards": []};
-  Map<int, Map> cardsData =
-      {}; // If the TextFormFields are saved from top to bottom, a list instead of a map would be enough
+  Map<int, Map> cardsData = {};
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -40,7 +41,7 @@ class _AddSetState extends State<AddSet> {
 
               try {
                 final response = await getIt<Dio>()
-                    .post("/hitsCareer", data: setData); //MOCK
+                    .post("/api/add_flashcard_set/", data: setData);
 
                 if (response.statusCode == 200) {
                   Navigator.push(
@@ -127,7 +128,18 @@ class _AddSetState extends State<AddSet> {
                       ),
                     ),
                   ),
-                ))
+                )),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the second screen when the button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SecondScreen()),
+                    );
+                  },
+                  child: const Text("Go to Second Screen"),
+                ),
               ],
             )),
       ),

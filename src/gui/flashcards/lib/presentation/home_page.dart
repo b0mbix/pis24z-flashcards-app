@@ -19,20 +19,38 @@ class _HomePageState extends State<HomePage> {
     fetchData();
   }
 
+  // Fetch data from the Django backend (GET request)
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("/eraSingleSeson"); //MOCK
-
-      if (response.statusCode == 201) { //MOCK - should be 200
+      final response = await getIt<Dio>().get("http://127.0.0.1:8000/eraSingleSeson/"); // Use the correct URL with a trailing slash
+      if (response.statusCode == 201) { // MOCK - should be 200 in real scenario
         final data = response.data;
         setState(() {
           sets = data;
         });
       } else {
-        print("An error occured");
+        print("An error occurred while fetching data");
       }
     } on DioException {
-      print("An error occured");
+      print("An error occurred while fetching data");
+    }
+  }
+
+  // Send data to the Django backend (POST request)
+  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
+    try {
+      final response = await getIt<Dio>().post(
+        "/add-flashcard-set/",  // Django endpoint to accept POST request
+        data: data,  // Data to send in the POST request
+      );
+
+      if (response.statusCode == 201) {
+        print("Data sent successfully: ${response.data}");
+      } else {
+        print("An error occurred while sending data");
+      }
+    } on DioException catch (e) {
+      print("Error: ${e.message}");
     }
   }
 
@@ -51,14 +69,16 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton.filled(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const AddSet()));
-              },
-              icon: const Icon(Icons.add)),
-          const SizedBox(
-            width: 50,
-          )
+            onPressed: () {
+              // Navigate to AddSet screen when pressed
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddSet()),
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+          const SizedBox(width: 50),
         ],
         leadingWidth: 300,
         backgroundColor: Colors.black,
@@ -68,20 +88,33 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.only(top: 40),
         child: ListView.separated(
-            itemCount: sets.isEmpty ? 0 : 5, //MOCK
-            separatorBuilder: (context, index) => const Divider(
-                  color: Colors.purple,
-                ),
-            itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Text(
-                    "Zestaw ${index + 1} - ${sets[index]["Player"]}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.white),
-                  ),
-                )),
+          itemCount: sets.isEmpty ? 0 : sets.length,  // Adjust to use actual length
+          separatorBuilder: (context, index) => const Divider(
+            color: Colors.purple,
+          ),
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: ListTile(
+              title: Text(
+                "Zestaw ${index + 1} - ${sets[index]["Player"]}",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.white),
+              ),
+              onTap: () {
+                // When tapping on a set, send data to Django (POST request)
+                Map<String, dynamic> flashcardSetData = {
+                  "Player": sets[index]["Player"],  // Example player data
+                  "setName": "Set ${index + 1}",    // Example set name
+                };
+
+                // Call the sendDataToDjango function to send the data
+                sendDataToDjango(flashcardSetData);
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
