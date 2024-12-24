@@ -1,0 +1,111 @@
+workspace "PIS" "PIS_quiz_app_architecture"
+
+    !identifiers hierarchical
+
+    model {
+        user = person "Użytkownik" "Użytkownik wykorzystujący aplikację do nauki z fiszek" "Użytkownik"
+        ss = softwareSystem "Aplikacja quizowa" {
+            spa = container "Aplikacja webowa - klient" "Zapewnia wszystkie funkcjonalności użytkownikowi przez przeglądarkę internetową" "Flutter" {
+                cardModule = component "Moduł zarządzania fiszkami" "Obsługuje tworzenie, edycję i przeglądanie fiszek" "Flutter"
+                importExportModule = component "Moduł importu i eksportu danych" "Obsługuje importowanie oraz eksportowanie zestawów fiszek do JSON" "Flutter"
+                studyModule = component "Moduł nauki" "Obsługuje wszystkie tryby nauki fiszek" "Flutter"
+                searchModule = component "Moduł wyszukiwania, filtrowania i sortowania" "Obsługuje operacje wyszukiwania, filtrowania i sortowania fiszek oraz zestawów fiszek" "Flutter"
+                statsModule = component "Moduł statystyk" "Obsługuje wyświetlanie statystyk" "Flutter"
+                userModule = component "Moduł użytkownika" "Obsługuje rejestrację, logowanie i zarządzanie użytkownikiem" "Flutter"
+            }
+            api = container "Aplikacja webowa - serwer" "Zapewnia funkcjonalności aplikacji przez API, odpowiada na zapytania" "Django" {
+                cardApi = component "Moduł zarządzania fiszkami" "Obsługuje operacje CRUD dla fiszek" "Django"
+                importExportApi = component "Moduł importu i eksportu danych" "Obsługuje logikę stojącą za importowaniem oraz eksportowaniem zestawów fiszek do JSON" "Django"
+                studyApi = component "Moduł nauki" "Obsługuje oznaczanie znajomości fiszek oraz ich kolejkowanie" "Django"
+                searchApi = component "Moduł wyszukiwania" "Obsługuje wyszukiwanie fiszek oraz zestawów fiszek" "Django"
+                sortFilterApi = component "Moduł filtrowania i sortowania" "Obsługuje filtrowanie oraz sortowanie fiszek oraz zestawów fiszek" "Django"
+                statsApi = component "Moduł statystyk" "Obsługuje przechowywanie i pobieranie statystyk" "Django"
+                userApi = component "Moduł użytkownika" "Obsługuje autoryzację oraz zarządzanie użytkownikiem" "Django"
+                
+                studyApi -> statsApi "Zapisuje wyniki nauki i aktualizuje statystyki użytkownika"
+                importExportApi -> cardApi "Tworzy lub aktualizuje fiszki podczas importu danych"
+                sortFilterApi -> cardApi "Pobiera szczegóły fiszek dla filtrowania i sortowania"
+            }
+            postgres = container "Baza danych PostgreSQL" "Przechowuje dane o użytkownikach, fiszkach i statystykach" "PostgreSQL" {
+                tags "Database"
+            }
+            elasticsearch = container "Baza danych Elasticsearch" "Zapewnia pełnotekstowe wyszukiwanie fiszek" "Elasticsearch" {
+                tags "Database"
+            }
+            minio = container "Magazyn multimediów MinIO" "Przechowuje multimedia powiązane z fiszkami" "MinIO" {
+                tags "Database"
+            }
+            
+            user -> ss.spa "Tworzy zestawy fiszek i uczy się używając"
+            ss.spa -> ss.api "Wysyła zapytania do"
+            ss.api -> ss.postgres "Czyta i zapisuje dane do"
+            ss.api -> ss.elasticsearch "Wstawia dane do wyszukiwania i wyszukuje"
+            ss.api -> ss.minio "Wstawia multimedia i pobiera je z"
+            
+            ss.spa.cardModule -> ss.api.cardApi "Wysyła żądania CRUD dla fiszek do"
+            ss.spa.importExportModule -> ss.api.importExportApi "Wysyła dane JSON związane z importem/eksportem do"
+            ss.spa.studyModule -> ss.api.studyApi "Wysyła i pobiera informacje o stanie nauki fiszek do"
+            ss.spa.searchModule -> ss.api.searchApi "Wysyła zapytania pełnotekstowe do"
+            ss.spa.searchModule -> ss.api.sortFilterApi "Wysyła zapytania sortowania i filtrowania do"
+            ss.spa.statsModule -> ss.api.statsApi "Wysyła zapytania o statystyki do"
+            ss.spa.userModule -> ss.api.userApi "Rejestruje i loguje użytkownika za pomocą"
+            
+            ss.api.cardApi -> ss.postgres "Przechowuje i odczytuje dane fiszek z"
+            ss.api.cardApi -> ss.elasticsearch "Przechowuje dane fiszek w"
+            ss.api.cardApi -> ss.minio "Przechowuje i odczytuje multimedia fiszek z"
+            ss.api.importExportApi -> ss.postgres "Odczytuje i zapisuje dane fiszek podczas importu/eksportu z"
+            ss.api.studyApi -> ss.postgres "Przechowuje i odczytuje dane o stanie nauki fiszek z"
+            ss.api.searchApi -> ss.elasticsearch "Korzysta z informacji do wyszukiwania pełnotekstowego w"
+            ss.api.statsApi -> ss.postgres "Przechowuje dane statystyk w"
+            ss.api.userApi -> ss.postgres "Przechowuje i odczytuje dane użytkowników z"
+        }
+
+
+    }
+
+    views {
+        systemContext ss "Diagram1" {
+            include *
+            autolayout lr
+        }
+
+        container ss "Diagram2" {
+            include *
+            autolayout lr
+        }
+        
+        component ss.spa "Diagram3" {
+            include *
+            autolayout lr
+        }
+        
+        component ss.api "Diagram4" {
+            include *
+            autolayout lr
+        }
+
+        styles {
+            # element "Element" {
+            #     color white
+            # }
+            # element "Person" {
+            #     background #116611
+            #     shape person
+            # }
+            # element "Software System" {
+            #     background #2D882D
+            # }
+            # element "Container" {
+            #     background #55aa55
+            # }
+            element "Database" {
+                shape cylinder
+            }
+            element "Component" {
+                
+            }
+        }
+        theme default
+    }
+
+}
