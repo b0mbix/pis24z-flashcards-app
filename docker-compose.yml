@@ -1,5 +1,5 @@
 services:
-  database:
+  postgres:
     build:
       context: ./database
       dockerfile: Dockerfile
@@ -11,7 +11,36 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=password
+      - ELASTIC_USERNAME=elastic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200" # API HTTP
+      - "9300:9300" # Komunikacja wewnętrzna elasticsearch
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: "user" 
+      MINIO_ROOT_PASSWORD: "password" 
+    ports:
+      - "9000:9000" # API HTTP
+      - "9001:9001" # Konsola zarządzania
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
 
   flutter:
     build:
@@ -49,3 +78,5 @@ services:
 volumes:
   db_data:
   nexus-data:
+  es_data:
+  minio_data:
