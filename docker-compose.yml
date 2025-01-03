@@ -47,7 +47,7 @@ services:
       context: ./src/gui/flutter
       dockerfile: Dockerfile
     ports:
-      - "8083:8080"
+      - "8083:8083"
     volumes:
       - ./src/gui/flutter:/app
     command: flutter run -d web-server --web-port=8083
