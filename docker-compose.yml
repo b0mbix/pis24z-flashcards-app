@@ -65,6 +65,8 @@ services:
     volumes:
       - ./src/logic:/app
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
 
   nexus:
     build:
