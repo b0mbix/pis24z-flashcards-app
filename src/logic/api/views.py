@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 import json
-from models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
+from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
 
 
 @api_view(['POST'])
