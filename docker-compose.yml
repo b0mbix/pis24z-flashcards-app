@@ -60,7 +60,7 @@ services:
       context: ./src/logic
       dockerfile: Dockerfile
     environment:
-      DJANGO_SETTINGS_MODULE: flashcards.settings
+      DJANGO_SETTINGS_MODULE: backend.settings
     ports:
       - "8000:8000"
     volumes:
