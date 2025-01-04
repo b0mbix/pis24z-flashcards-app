@@ -52,9 +52,6 @@ services:
       - ./src/gui/flutter:/app
     command: flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8083
 
-  
-  
-
   logic:
     build:
       context: ./src/logic
