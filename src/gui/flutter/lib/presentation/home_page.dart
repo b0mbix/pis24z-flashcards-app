@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("/api/example/");  //MOCK
+      final response = await getIt<Dio>().get("/api/flashcard_sets/all/");
       
       if (response.statusCode == 200) { 
         final data = response.data;

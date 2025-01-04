@@ -42,7 +42,7 @@ class _AddSetState extends State<AddSet> {
 
               try {
                 final response = await getIt<Dio>()
-                    .post("/api/add_flashcard_set/", data: setData);
+                    .post("/api/flashcard_sets/add/", data: setData);
 
                 if (response.statusCode == 201) {
                   Navigator.push(
