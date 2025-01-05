@@ -40,7 +40,7 @@ class _AddSetState extends State<AddSet> {
               try {
                 final response = await getIt<Dio>()
                     .post("/api/flashcard-sets/add/", data: {
-                  "user_id": 0,
+                  "user_id": 1,
                   "description": "",
                   "name": setData["name"]
                 });
