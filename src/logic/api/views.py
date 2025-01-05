@@ -39,7 +39,7 @@ def add_flashcard_set(request):
             )
             return Response({"message": "Flashcard set created successfully", "set_id": flashcard_set.id}, status=status.HTTP_201_CREATED)
         except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +58,7 @@ def add_flashcard(request):
             )
             return Response({"message": "Flashcard created successfully", "flashcard_id": flashcard.id}, status=status.HTTP_201_CREATED)
         except FlashcardSet.DoesNotExist:
-            return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
@@ -86,9 +86,9 @@ def add_flashcard_set_tag(request):
             flashcard_set_tag = FlashcardSetTag.objects.create(set=flashcard_set, tag=tag)
             return Response({"message": "Flashcard set tagged successfully", "id": flashcard_set_tag.id}, status=status.HTTP_201_CREATED)
         except FlashcardSet.DoesNotExist:
-            return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
         except Tag.DoesNotExist:
-            return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Tag not found"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)

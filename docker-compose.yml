@@ -66,6 +66,14 @@ services:
     depends_on:
       - postgres
 
+  migrate:
+    build:
+      context: ./src/logic
+      dockerfile: Dockerfile
+    command: sh -c "python manage.py makemigrations && python manage.py migrate"
+    depends_on:
+      - postgres
+
   nexus:
     build:
       context: .
