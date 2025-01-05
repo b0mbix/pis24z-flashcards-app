@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("/api/flashcard_sets/all/");
+      final response = await getIt<Dio>().get("/api/flashcard-sets/all/");
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> sendDataToDjango(Map<String, dynamic> data) async {
     try {
       final response = await getIt<Dio>().post(
-        "/add-flashcard-set/",
+        "/api/flashcard-sets/add/",
         data: data,
       );
 

@@ -39,7 +39,7 @@ class _AddSetState extends State<AddSet> {
 
               try {
                 final response = await getIt<Dio>()
-                    .post("/api/add_flashcard_set/", data: {
+                    .post("/api/flashcard-sets/add/", data: {
                   "user_id": 0,
                   "description": "",
                   "name": setData["name"]
@@ -51,7 +51,7 @@ class _AddSetState extends State<AddSet> {
                   for (var cardData in setData["cards"]) {
                     if (cardData["term"] != "" &&
                         cardData["definition"] != "") {
-                      await getIt<Dio>().post("/api/add_flashcard/", data: {
+                      await getIt<Dio>().post("/api/flashcards/add/", data: {
                         "set_id": set_id,
                         "question": cardData["term"],
                         "answer": cardData["definition"]
