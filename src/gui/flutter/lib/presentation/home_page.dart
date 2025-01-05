@@ -15,18 +15,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    
     super.initState();
     fetchData();
   }
 
-
-  
   Future<void> fetchData() async {
     try {
-      final response = await getIt<Dio>().get("/api/example/");  //MOCK
-      
-      if (response.statusCode == 200) { 
+      final response = await getIt<Dio>().get("/api/flashcard-sets/all/");
+
+      if (response.statusCode == 200) {
         final data = response.data;
 
         if (data is List) {
@@ -44,14 +41,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
-
-
   Future<void> sendDataToDjango(Map<String, dynamic> data) async {
     try {
       final response = await getIt<Dio>().post(
-        "/add-flashcard-set/",  
-        data: data, 
+        "/api/flashcard-sets/add/",
+        data: data,
       );
 
       if (response.statusCode == 201) {
@@ -63,9 +57,6 @@ class _HomePageState extends State<HomePage> {
       print("Error: ${e.message}");
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,26 +90,18 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
-        padding: EdgeInsets.only(top: 40),
+        padding: const EdgeInsets.only(top: 40),
         child: sets.isEmpty
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 itemCount: sets.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        print('${sets[index]['name']} selected');
-                      },
-                      child: Text(
-                        sets[index]['name'],
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                      ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    child: Text(
+                      sets[index]['name'],
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   );
                 },

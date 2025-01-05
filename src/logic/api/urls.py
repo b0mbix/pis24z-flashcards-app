@@ -1,14 +1,12 @@
 from django.urls import path
 from . import views
-from .views import add_flashcard_set
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import api_view
 
-from . import views
 
 urlpatterns = [
-    path('example/', views.example_view, name='example'),  
-    path('add_flashcard_set/', views.add_flashcard_set, name='add_flashcard_set'), 
+    path('users/add/', views.add_user, name='add_user'),
+    path('flashcard-sets/all/', views.get_flashcard_sets_with_details, name='get_flashcard_sets_with_details'),
+    path('flashcard-sets/add/', views.add_flashcard_set, name='add_flashcard_set'),
+    path('flashcard-sets/tags/add/', views.add_flashcard_set_tag, name='add_flashcard_set_tag'),
+    path('flashcards/add/', views.add_flashcard, name='add_flashcard'),
+    path('tags/add/', views.add_tag, name='add_tag'),
 ]

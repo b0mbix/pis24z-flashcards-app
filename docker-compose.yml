@@ -44,13 +44,13 @@ services:
 
   flutter:
     build:
-      context: ./src/gui
+      context: ./src/gui/flutter
       dockerfile: Dockerfile
     ports:
-      - "8083:8080"
+      - "8083:8083"
     volumes:
       - ./src/gui/flutter:/app
-    command: flutter run -d web-server
+    command: flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8083
 
   logic:
     build:
@@ -63,6 +63,16 @@ services:
     volumes:
       - ./src/logic:/app
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+
+  migrate:
+    build:
+      context: ./src/logic
+      dockerfile: Dockerfile
+    command: sh -c "python manage.py makemigrations && python manage.py migrate"
+    depends_on:
+      - postgres
 
   nexus:
     build:
