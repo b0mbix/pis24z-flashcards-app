@@ -1,3 +1,8 @@
-# from django.test import TestCase  # TODO - commented to satiate flake. to delete if won't be needed in the future
+from django.test import TestCase
 
-# Create your tests here.
+class SimpleTest(TestCase):
+
+    def test_one_equals_one(self):
+        # Test sprawdzający, czy 1 == 1
+        self.assertEqual(1, 1)
+
