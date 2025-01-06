@@ -15,16 +15,34 @@ class _AddSetState extends State<AddSet> {
   Map<String, dynamic> setData = {"name": "", "cards": []};
   Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
+  bool startedSending = false;
+  bool sentSuccessfully = false;
 
   Future<void> sendDataToDjango(Map<String, dynamic> data) async {
     try {
-      final response = await getIt<Dio>().post(
-        "/api/flashcard-sets/add/",
-        data: data,
-      );
+      setState(() {
+        startedSending = true;
+      });
+
+      final response =
+          await getIt<Dio>().post("/api/flashcard-sets/add/", data: data);
 
       if (response.statusCode == 201) {
-        print("Data sent successfully: ${response.data}");
+        final setId = response.data["set_id"];
+
+        for (var cardData in setData["cards"]) {
+          if (cardData["term"] != "" && cardData["definition"] != "") {
+            await getIt<Dio>().post("/api/flashcards/add/", data: {
+              "set_id": setId,
+              "question": cardData["term"],
+              "answer": cardData["definition"]
+            });
+          }
+        }
+
+        setState(() {
+          sentSuccessfully = true;
+        });
       } else {
         print("An error occurred while sending data");
       }
@@ -53,38 +71,17 @@ class _AddSetState extends State<AddSet> {
               formKey.currentState!.save();
               setData["cards"] =
                   cardsData.entries.map((entry) => entry.value).toList();
+              setData["description"] = "";
+              setData["user_id"] = 1;
 
-              try {
-                final response = await getIt<Dio>()
-                    .post("/api/flashcard-sets/add/", data: {
-                  "user_id": 1,
-                  "description": "",
-                  "name": setData["name"]
-                });
-
-                if (response.statusCode == 201) {
-                  final set_id = response.data["set_id"];
-
-                  for (var cardData in setData["cards"]) {
-                    if (cardData["term"] != "" &&
-                        cardData["definition"] != "") {
-                      await getIt<Dio>().post("/api/flashcards/add/", data: {
-                        "set_id": set_id,
-                        "question": cardData["term"],
-                        "answer": cardData["definition"]
-                      });
-                    }
-                  }
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage()));
-                } else {
-                  print("An error occured");
-                }
-              } on DioException {
-                print("An error occured");
+              sendDataToDjango(setData);
+              if (startedSending && sentSuccessfully) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('An error occured. Try again.'),
+                ));
               }
             },
           ),
@@ -166,7 +163,7 @@ class _AddSetState extends State<AddSet> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
                   child: const Text("Go to back to Home page"),
