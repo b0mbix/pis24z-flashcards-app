@@ -68,19 +68,23 @@ class _AddSetState extends State<AddSet> {
           ElevatedButton(
             child: const Text("Save"),
             onPressed: () async {
-              formKey.currentState!.save();
-              setData["cards"] =
-                  cardsData.entries.map((entry) => entry.value).toList();
-              setData["user_id"] = 1;
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+                setData["cards"] =
+                    cardsData.entries.map((entry) => entry.value).toList();
+                setData["user_id"] = 1;
 
-              sendDataToDjango(setData);
-              if (startedSending && sentSuccessfully) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomePage()));
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('An error occured. Try again.'),
-                ));
+                sendDataToDjango(setData);
+                if (startedSending && sentSuccessfully) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('An error occured. Try again.'),
+                  ));
+                }
               }
             },
           ),
@@ -103,7 +107,7 @@ class _AddSetState extends State<AddSet> {
                   children: [
                     Expanded(
                         child: MyFormField(
-                      name: "Set name",
+                      name: "Name",
                       customOnSaved: (newValue) {
                         setData["name"] = newValue;
                       },
@@ -111,14 +115,18 @@ class _AddSetState extends State<AddSet> {
                     Expanded(child: Container())
                   ],
                 ),
+                const SizedBox(
+                  height: 15,
+                ),
                 Row(
                   children: [
                     Expanded(
                         child: MyFormField(
-                      name: "Set description",
+                      name: "Description",
                       customOnSaved: (newValue) {
                         setData["descritpion"] = newValue;
                       },
+                      nullable: true,
                     )),
                     Expanded(child: Container())
                   ],
@@ -148,6 +156,7 @@ class _AddSetState extends State<AddSet> {
                                   cardsData[index]!["term"] = newValue;
                                 }
                               },
+                              nullable: true,
                             )),
                             const SizedBox(
                               width: 30,
@@ -162,6 +171,7 @@ class _AddSetState extends State<AddSet> {
                                   cardsData[index]!["definition"] = newValue;
                                 }
                               },
+                              nullable: true,
                             ))
                           ],
                         ),
