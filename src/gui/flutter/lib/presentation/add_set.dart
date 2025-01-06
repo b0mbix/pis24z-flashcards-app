@@ -124,7 +124,7 @@ class _AddSetState extends State<AddSet> {
                         child: MyFormField(
                       name: "Description",
                       customOnSaved: (newValue) {
-                        setData["descritpion"] = newValue;
+                        setData["description"] = newValue;
                       },
                       nullable: true,
                     )),
