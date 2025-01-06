@@ -1,11 +1,18 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
+# from django.http import JsonResponse
+# from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 import json
+# from django.views.decorators.csrf import csrf_exempt
+# import json
 from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
+
+# TODO - commented to satiate flake. to delete if won't be needed in the future
+
 
 
 @api_view(['POST'])
