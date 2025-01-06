@@ -22,6 +22,11 @@ docker compose exec logic python manage.py createsuperuser
 ```
 Po dodaniu superużytkownika, można zalogować się do strony `admin/` na serwerze.
 
+Hard reset aplikacji wraz z wyczyszczeniem bazy danych:
+```
+docker compose down -v
+```
+
 ### Eksport danych do Elasticsearch/MinIO
 1. Aby wyeksportować dane do Elasticsearch, uruchom polecenie:
   ```bash
