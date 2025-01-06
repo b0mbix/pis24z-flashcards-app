@@ -32,16 +32,11 @@ pipeline {
             }
         }
 
-        stage('Install Python3-poetry') {
+        stage('Install Python3-venv') {
             steps {
                 script {
-                    // Ensure python3-venv and python3-poetry are installed
+                    // Ensure python3-venv and python3-venv are installed
                     sh '''
-                        if ! dpkg -l | grep -q python3-poetry; then
-                            apt-get update
-                            apt-get install -y python3-poetry
-                        fi
-
                         if ! dpkg -l | grep -q python3-venv; then
                             apt-get update
                             apt-get install -y python3-venv
