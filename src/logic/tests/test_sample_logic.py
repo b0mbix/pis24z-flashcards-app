@@ -1,4 +1,4 @@
-from logic.sample_logic import hello
+from sample_logic import hello
 
 
 def test_hello():

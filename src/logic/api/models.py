@@ -10,10 +10,8 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
 
-
     class Meta:
         db_table = 'users'
-
 
     def __str__(self):
         return self.username
@@ -44,28 +42,29 @@ class Flashcard(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'flashcards'    
+        db_table = 'flashcards'
 
     def __str__(self):
-        return self.question[:50]  # Zwraca pierwsze 50 znaków pytania
+        return self.question[:50]  # Return the first 50 characters of the question
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     class Meta:
-        db_table = 'tags'   
+        db_table = 'tags'
 
     def __str__(self):
         return self.name
 
 
 class FlashcardSetTag(models.Model):
-    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='tags')
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='flashcard_sets')
+    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_tags')
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagged_flashcard_sets')
 
     class Meta:
-        db_table = 'flashcardsettags'   
+        db_table = 'flashcardsettags'
+        unique_together = ('set', 'tag')  # Prevent duplicate tags for the same set
 
     def __str__(self):
         return f"{self.set.name} - {self.tag.name}"

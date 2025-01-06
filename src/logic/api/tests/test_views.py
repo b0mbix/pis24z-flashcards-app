@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from logic.api.models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
+from api.models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
 
 @pytest.fixture
 def api_client():
