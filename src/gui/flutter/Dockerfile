@@ -46,4 +46,3 @@ RUN flutter build web --release --verbose
 
 # Punkt wejścia dla kontenera
 CMD ["flutter", "run", "--web-server"]
-

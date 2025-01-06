@@ -90,4 +90,3 @@ volumes:
   nexus-data:
   es_data:
   minio_data:
-
