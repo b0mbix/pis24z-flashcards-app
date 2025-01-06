@@ -15,14 +15,15 @@ class _AddSetState extends State<AddSet> {
   Map<String, dynamic> setData = {};
   Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
-  bool startedSending = false;
-  bool sentSuccessfully = false;
+  bool sendSuccess = false;
+  bool sendFailure = false;
 
   Future<void> sendDataToDjango(
       Map<String, dynamic> setData, List<Map<String, String>> cardsData) async {
     try {
       setState(() {
-        startedSending = true;
+        sendSuccess = false;
+        sendFailure = false;
       });
 
       final response =
@@ -42,13 +43,19 @@ class _AddSetState extends State<AddSet> {
         }
 
         setState(() {
-          sentSuccessfully = true;
+          sendSuccess = true;
         });
       } else {
-        print("An error occurred while sending data");
+        print("ERROR - Response status code != 201");
+        setState(() {
+          sendFailure = true;
+        });
       }
-    } catch (e) {
-      print("Error while sending data: $e");
+    } on DioException catch (e) {
+      print("ERROR - Dio error while sending data: $e");
+      setState(() {
+        sendFailure = true;
+      });
     }
   }
 
@@ -72,15 +79,14 @@ class _AddSetState extends State<AddSet> {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
                 setData["user_id"] = 0;
-                sendDataToDjango(setData,
+                await sendDataToDjango(setData,
                     cardsData.entries.map((entry) => entry.value).toList());
-
-                if (startedSending && sentSuccessfully) {
+                if (sendSuccess!) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const HomePage()));
-                } else {
+                } else if (sendFailure!) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('An error occured. Try again.'),
                   ));

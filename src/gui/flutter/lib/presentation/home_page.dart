@@ -23,6 +23,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchData() async {
     try {
+      setState(() {
+        fetchSuccess = false;
+        fetchFailure = false;
+      });
+
       final response = await getIt<Dio>().get("/api/flashcard-sets/all/");
 
       if (response.statusCode == 200) {
@@ -32,13 +37,13 @@ class _HomePageState extends State<HomePage> {
           fetchSuccess = true;
         });
       } else {
-        print("An error occurred while fetching data");
+        print("ERROR - Response status code != 200");
         setState(() {
           fetchFailure = true;
         });
       }
-    } catch (e) {
-      print("Error while fetching data: $e");
+    } on DioException catch (e) {
+      print("ERROR - Dio error while fetching data: $e");
       setState(() {
         fetchFailure = true;
       });
