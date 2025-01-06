@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'api',
+    'logic.api',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,7 +54,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:8080",
+    "http://127.0.0.1:8083",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'flashcards_db',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'postgres',
+        'HOST': '0.0.0.0',
         'PORT': '5432',
     }
 }
