@@ -41,6 +41,16 @@ Po dodaniu superużytkownika, można zalogować się do strony `admin/` na serwe
   - **Username**: `postgres`
   - **Password**: `postgres`
 - Domyślna baza danych: `flashcards_db`
+- Wejście na poziom bazy danych flashcards_db w kontenerze:
+
+  ```
+  docker exec -it pis24z-flashcards-app-postgres-1 psql -U postgres -d flashcards_db
+  ```
+- Sprawdzenie tabel i relacji bazy (pozostała funkcjonalność jak dla baz SQL):
+
+  ```
+  \dt
+  ```
 
 ### Elasticsearch:
 - Dane dostępowe:
