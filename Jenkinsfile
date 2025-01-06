@@ -50,6 +50,7 @@ pipeline {
             steps {
                 script {
                     sh 'setsid python3 /home/mbrzezi3/example.py > example.log &'
+		    sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphans'
                     sh 'docker compose -f docker-compose-blue.yml up --build -d'
                 }
             }
@@ -61,6 +62,7 @@ pipeline {
                     // Create virtual environment if it doesn't exist
                     if (!fileExists("${env.VENV_DIR}/bin/activate")) {
                         sh "python3 -m venv ${env.VENV_DIR}"
+			sh ". ${env.VENV_DIR}/bin/activate"
                     }
                 }
             }
@@ -79,7 +81,7 @@ pipeline {
             steps {
                 script {
                     // TODO: Add test execution
-					 sh 'echo "do nothing for now"'
+		    sh 'docker compose -f docker-compose-blue.yml exec logic-blue python3 manage.py test api'
                 }
             }
         }
@@ -93,21 +95,17 @@ pipeline {
             }
         }
 
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Clean the virtual environment
-                    sh "rm -rf ${env.VENV_DIR}"
-                }
-            }
-        }
     }
 
     post {
         always {
             script {
-                echo 'Cleaning up after pipeline execution'
-                sh 'docker compose -f docker-compose-blue.yml down'
+                // Cleaning up after pipeline execution
+		sh "rm -rf ${env.VENV_DIR}"
+
+                sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphans'
+                sh 'docker compose -f docker-compose-green.yml down --volumes --remove-orphans'
+
             }
         }
 
