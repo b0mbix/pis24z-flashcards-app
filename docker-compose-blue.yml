@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: flashcards_db
     ports:
-      - "55550:5432"
+      - "5559:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -25,8 +25,8 @@ services:
         soft: -1
         hard: -1
     ports:
-      - "55551:9200" # API HTTP
-      - "56561:9300" # Komunikacja wewnętrzna elasticsearch
+      - "5550:9200" # API HTTP
+      - "5551:9300" # Komunikacja wewnętrzna elasticsearch
     volumes:
       - es_data:/usr/share/elasticsearch/data
 
@@ -36,8 +36,8 @@ services:
       MINIO_ROOT_USER: "user"
       MINIO_ROOT_PASSWORD: "password"
     ports:
-      - "55552:9000" # API HTTP
-      - "55553:9001" # Konsola zarządzania
+      - "5552:9000" # API HTTP
+      - "5553:9001" # Konsola zarządzania
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
@@ -47,7 +47,7 @@ services:
       context: ./src/gui/flutter
       dockerfile: Dockerfile
     ports:
-      - "55554:8083"
+      - "5554:8083"
     volumes:
       - ./src/gui/flutter:/app
     command: flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8083
@@ -60,7 +60,7 @@ services:
       DJANGO_SETTINGS_MODULE: backend.settings
       DJANGO_ENVIRONMENT: "blue"  # Ustawienie środowiska "blue"
     ports:
-      - "55555:8000"
+      - "5555:8000"
     volumes:
       - ./src/logic:/app
     command: python manage.py runserver 0.0.0.0:8000
@@ -80,7 +80,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "55556:8081"
+      - "5556:8081"
     environment:
       NEXUS_ADMIN_PASSWORD: password123
     volumes:
