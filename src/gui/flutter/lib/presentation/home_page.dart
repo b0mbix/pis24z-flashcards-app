@@ -70,12 +70,19 @@ class _HomePageState extends State<HomePage> {
         ),
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-            child: Text(
-              sets[index]['name'],
-              style: const TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          );
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              child: Row(
+                children: [
+                  Text(
+                    sets[index]['name'],
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  Text(
+                    " - ${sets[index]['description']}",
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                  ),
+                ],
+              ));
         },
       );
     }
