@@ -12,6 +12,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List sets = [];
+  bool fetchSuccess = false;
+  bool fetchFailure = false;
 
   @override
   void initState() {
@@ -21,40 +23,73 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchData() async {
     try {
+      setState(() {
+        fetchSuccess = false;
+        fetchFailure = false;
+      });
+
       final response = await getIt<Dio>().get("/api/flashcard-sets/all/");
 
       if (response.statusCode == 200) {
         final data = response.data;
-
-        if (data is List) {
-          setState(() {
-            sets = List.from(data);
-          });
-        } else {
-          print("Unexpected data format: The response is not a List");
-        }
+        setState(() {
+          sets = List.from(data);
+          fetchSuccess = true;
+        });
       } else {
-        print("An error occurred while fetching data");
+        print("ERROR - Response status code != 200");
+        setState(() {
+          fetchFailure = true;
+        });
       }
-    } catch (e) {
-      print("Error fetching data: $e");
+    } on DioException catch (e) {
+      print("ERROR - Dio error while fetching data: $e");
+      setState(() {
+        fetchFailure = true;
+      });
     }
   }
 
-  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
-    try {
-      final response = await getIt<Dio>().post(
-        "/api/flashcard-sets/add/",
-        data: data,
+  Widget displayPageContent() {
+    if (fetchSuccess == false && fetchFailure == false) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (fetchFailure) {
+      return const Center(
+        child: Text(
+          "Nothing to display, an error occured.",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
       );
-
-      if (response.statusCode == 201) {
-        print("Data sent successfully: ${response.data}");
-      } else {
-        print("An error occurred while sending data");
-      }
-    } on DioException catch (e) {
-      print("Error: ${e.message}");
+    } else if (fetchSuccess && sets.isEmpty) {
+      return const Center(
+        child: Text(
+          "You don't have any sets yet. Add one using the button above.",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      );
+    } else {
+      return ListView.separated(
+        itemCount: sets.length,
+        separatorBuilder: (context, index) => const Divider(
+          color: Colors.purple,
+        ),
+        itemBuilder: (context, index) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              child: Row(
+                children: [
+                  Text(
+                    sets[index]['name'],
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  Text(
+                    " - ${sets[index]['description']}",
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                  ),
+                ],
+              ));
+        },
+      );
     }
   }
 
@@ -91,21 +126,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
         padding: const EdgeInsets.only(top: 40),
-        child: sets.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: sets.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: Text(
-                      sets[index]['name'],
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  );
-                },
-              ),
+        child: displayPageContent(),
       ),
     );
   }

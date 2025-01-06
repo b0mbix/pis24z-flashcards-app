@@ -12,9 +12,52 @@ class AddSet extends StatefulWidget {
 }
 
 class _AddSetState extends State<AddSet> {
-  Map<String, dynamic> setData = {"name": "", "cards": []};
+  Map<String, dynamic> setData = {};
   Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
+  bool sendSuccess = false;
+  bool sendFailure = false;
+
+  Future<void> sendDataToDjango(
+      Map<String, dynamic> setData, List<Map<String, String>> cardsData) async {
+    try {
+      setState(() {
+        sendSuccess = false;
+        sendFailure = false;
+      });
+
+      final response =
+          await getIt<Dio>().post("/api/flashcard-sets/add/", data: setData);
+
+      if (response.statusCode == 201) {
+        final setId = response.data["set_id"];
+
+        for (var cardData in cardsData) {
+          if (cardData["term"] != "" && cardData["definition"] != "") {
+            await getIt<Dio>().post("/api/flashcards/add/", data: {
+              "set_id": setId,
+              "question": cardData["term"],
+              "answer": cardData["definition"]
+            });
+          }
+        }
+
+        setState(() {
+          sendSuccess = true;
+        });
+      } else {
+        print("ERROR - Response status code != 201");
+        setState(() {
+          sendFailure = true;
+        });
+      }
+    } on DioException catch (e) {
+      print("ERROR - Dio error while sending data: $e");
+      setState(() {
+        sendFailure = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,41 +76,21 @@ class _AddSetState extends State<AddSet> {
           ElevatedButton(
             child: const Text("Save"),
             onPressed: () async {
-              formKey.currentState!.save();
-              setData["cards"] =
-                  cardsData.entries.map((entry) => entry.value).toList();
-
-              try {
-                final response = await getIt<Dio>()
-                    .post("/api/flashcard-sets/add/", data: {
-                  "user_id": 1,
-                  "description": "",
-                  "name": setData["name"]
-                });
-
-                if (response.statusCode == 201) {
-                  final set_id = response.data["set_id"];
-
-                  for (var cardData in setData["cards"]) {
-                    if (cardData["term"] != "" &&
-                        cardData["definition"] != "") {
-                      await getIt<Dio>().post("/api/flashcards/add/", data: {
-                        "set_id": set_id,
-                        "question": cardData["term"],
-                        "answer": cardData["definition"]
-                      });
-                    }
-                  }
-
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+                setData["user_id"] = 1;
+                await sendDataToDjango(setData,
+                    cardsData.entries.map((entry) => entry.value).toList());
+                if (sendSuccess!) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const HomePage()));
-                } else {
-                  print("An error occured");
+                } else if (sendFailure!) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('An error occured. Try again.'),
+                  ));
                 }
-              } on DioException {
-                print("An error occured");
               }
             },
           ),
@@ -90,10 +113,26 @@ class _AddSetState extends State<AddSet> {
                   children: [
                     Expanded(
                         child: MyFormField(
-                      name: "Set name",
+                      name: "Name",
                       customOnSaved: (newValue) {
                         setData["name"] = newValue;
                       },
+                    )),
+                    Expanded(child: Container())
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: MyFormField(
+                      name: "Description",
+                      customOnSaved: (newValue) {
+                        setData["description"] = newValue;
+                      },
+                      nullable: true,
                     )),
                     Expanded(child: Container())
                   ],
@@ -123,6 +162,7 @@ class _AddSetState extends State<AddSet> {
                                   cardsData[index]!["term"] = newValue;
                                 }
                               },
+                              nullable: true,
                             )),
                             const SizedBox(
                               width: 30,
@@ -137,6 +177,7 @@ class _AddSetState extends State<AddSet> {
                                   cardsData[index]!["definition"] = newValue;
                                 }
                               },
+                              nullable: true,
                             ))
                           ],
                         ),
@@ -149,7 +190,7 @@ class _AddSetState extends State<AddSet> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
                   child: const Text("Go to back to Home page"),
