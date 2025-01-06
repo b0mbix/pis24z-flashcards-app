@@ -78,7 +78,7 @@ class _AddSetState extends State<AddSet> {
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
-                setData["user_id"] = 0;
+                setData["user_id"] = 1;
                 await sendDataToDjango(setData,
                     cardsData.entries.map((entry) => entry.value).toList());
                 if (sendSuccess!) {
