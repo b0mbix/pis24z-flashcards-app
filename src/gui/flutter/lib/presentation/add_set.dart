@@ -16,6 +16,23 @@ class _AddSetState extends State<AddSet> {
   Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
 
+  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
+    try {
+      final response = await getIt<Dio>().post(
+        "/api/flashcard-sets/add/",
+        data: data,
+      );
+
+      if (response.statusCode == 201) {
+        print("Data sent successfully: ${response.data}");
+      } else {
+        print("An error occurred while sending data");
+      }
+    } catch (e) {
+      print("Error while sending data: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

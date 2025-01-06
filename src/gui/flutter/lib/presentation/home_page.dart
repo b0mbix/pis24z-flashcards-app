@@ -25,36 +25,14 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         final data = response.data;
-
-        if (data is List) {
-          setState(() {
-            sets = List.from(data);
-          });
-        } else {
-          print("Unexpected data format: The response is not a List");
-        }
+        setState(() {
+          sets = List.from(data);
+        });
       } else {
         print("An error occurred while fetching data");
       }
     } catch (e) {
-      print("Error fetching data: $e");
-    }
-  }
-
-  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
-    try {
-      final response = await getIt<Dio>().post(
-        "/api/flashcard-sets/add/",
-        data: data,
-      );
-
-      if (response.statusCode == 201) {
-        print("Data sent successfully: ${response.data}");
-      } else {
-        print("An error occurred while sending data");
-      }
-    } on DioException catch (e) {
-      print("Error: ${e.message}");
+      print("Error while fetching data: $e");
     }
   }
 
