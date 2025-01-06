@@ -12,7 +12,7 @@ class AddSet extends StatefulWidget {
 }
 
 class _AddSetState extends State<AddSet> {
-  Map<String, dynamic> setData = {"name": "", "cards": []};
+  Map<String, dynamic> setData = {};
   Map<int, Map<String, String>> cardsData = {};
   final formKey = GlobalKey<FormState>();
   bool startedSending = false;
