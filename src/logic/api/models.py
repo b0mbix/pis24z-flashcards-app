@@ -49,7 +49,7 @@ class Flashcard(models.Model):
         db_table = 'flashcards'
 
     def __str__(self):
-        return self.question[:50]  # Zwraca pierwsze 50 znaków pytania
+        return self.question[:50]  # Return the first 50 characters of the question
 
 
 class Tag(models.Model):
@@ -64,14 +64,15 @@ class Tag(models.Model):
 
 class FlashcardSetTag(models.Model):
     set = models.ForeignKey(
-        FlashcardSet, on_delete=models.CASCADE, related_name='tags'
+        FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_tags'
     )
     tag = models.ForeignKey(
-        Tag, on_delete=models.CASCADE, related_name='flashcard_sets'
+        Tag, on_delete=models.CASCADE, related_name='tagged_flashcard_sets'
     )
 
     class Meta:
         db_table = 'flashcardsettags'
+        unique_together = ('set', 'tag')  # Prevent duplicate tags for the same set
 
     def __str__(self):
         return f"{self.set.name} - {self.tag.name}"

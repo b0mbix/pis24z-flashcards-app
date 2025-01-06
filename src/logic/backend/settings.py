@@ -16,6 +16,7 @@ ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 # Sprawdzenie, czy środowisko to "blue" czy "green"
 ENVIRONMENT = os.getenv('DJANGO_ENVIRONMENT', 'green')  # Domyślnie "green", jeśli nie ustawiono
 
+
 # Ustawienie bazy danych w zależności od środowiska
 if ENVIRONMENT == 'blue':
     DATABASES = {
@@ -24,7 +25,7 @@ if ENVIRONMENT == 'blue':
             'NAME': 'flashcards_db_blue',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'postgres-blue',
+            'HOST': '0.0.0.0',
             'PORT': '5432',  # Port dla środowiska blue
         }
     }
@@ -35,15 +36,13 @@ else:  # domyślnie "green"
             'NAME': 'flashcards_db',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'postgres',
+            'HOST': '0.0.0.0',
             'PORT': '5432',  # Port dla środowiska green
         }
     }
 
 # Aplikacje w projekcie
 INSTALLED_APPS = [
-    'api',
-    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'api',
+    'rest_framework',
 ]
 
 # Middleware (pośrednicy)
