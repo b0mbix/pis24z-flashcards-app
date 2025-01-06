@@ -18,19 +18,20 @@ class _AddSetState extends State<AddSet> {
   bool startedSending = false;
   bool sentSuccessfully = false;
 
-  Future<void> sendDataToDjango(Map<String, dynamic> data) async {
+  Future<void> sendDataToDjango(
+      Map<String, dynamic> setData, List<Map<String, String>> cardsData) async {
     try {
       setState(() {
         startedSending = true;
       });
 
       final response =
-          await getIt<Dio>().post("/api/flashcard-sets/add/", data: data);
+          await getIt<Dio>().post("/api/flashcard-sets/add/", data: setData);
 
       if (response.statusCode == 201) {
         final setId = response.data["set_id"];
 
-        for (var cardData in setData["cards"]) {
+        for (var cardData in cardsData) {
           if (cardData["term"] != "" && cardData["definition"] != "") {
             await getIt<Dio>().post("/api/flashcards/add/", data: {
               "set_id": setId,
@@ -70,11 +71,10 @@ class _AddSetState extends State<AddSet> {
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
-                setData["cards"] =
-                    cardsData.entries.map((entry) => entry.value).toList();
-                setData["user_id"] = 1;
+                setData["user_id"] = 0;
+                sendDataToDjango(setData,
+                    cardsData.entries.map((entry) => entry.value).toList());
 
-                sendDataToDjango(setData);
                 if (startedSending && sentSuccessfully) {
                   Navigator.push(
                       context,
