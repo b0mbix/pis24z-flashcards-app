@@ -103,8 +103,8 @@ pipeline {
                 // Cleaning up after pipeline execution
 		sh "rm -rf ${env.VENV_DIR}"
 
-                sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphan'
-                sh 'docker compose -f docker-compose-green.yml down --volumes --remove-orphan'
+                sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphans'
+                sh 'docker compose -f docker-compose-green.yml down --volumes --remove-orphans'
 
             }
         }
