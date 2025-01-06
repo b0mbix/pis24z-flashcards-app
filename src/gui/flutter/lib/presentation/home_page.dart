@@ -12,6 +12,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List sets = [];
+  bool fetchSuccess = false;
+  bool fetchFailure = false;
 
   @override
   void initState() {
@@ -27,12 +29,55 @@ class _HomePageState extends State<HomePage> {
         final data = response.data;
         setState(() {
           sets = List.from(data);
+          fetchSuccess = true;
         });
       } else {
         print("An error occurred while fetching data");
+        setState(() {
+          fetchFailure = true;
+        });
       }
     } catch (e) {
       print("Error while fetching data: $e");
+      setState(() {
+        fetchFailure = true;
+      });
+    }
+  }
+
+  Widget displayPageContent() {
+    if (fetchSuccess == false && fetchFailure == false) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (fetchFailure) {
+      return const Center(
+        child: Text(
+          "Nothing to display, an error occured.",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      );
+    } else if (fetchSuccess && sets.isEmpty) {
+      return const Center(
+        child: Text(
+          "You don't have any sets yet. Add one using the button above.",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      );
+    } else {
+      return ListView.separated(
+        itemCount: sets.length,
+        separatorBuilder: (context, index) => const Divider(
+          color: Colors.purple,
+        ),
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            child: Text(
+              sets[index]['name'],
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          );
+        },
+      );
     }
   }
 
@@ -69,21 +114,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color.fromRGBO(28, 28, 28, 1),
       body: Padding(
         padding: const EdgeInsets.only(top: 40),
-        child: sets.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: sets.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: Text(
-                      sets[index]['name'],
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  );
-                },
-              ),
+        child: displayPageContent(),
       ),
     );
   }
