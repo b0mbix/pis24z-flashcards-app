@@ -1,5 +1,5 @@
 services:
-  postgres:
+  postgres-blue:
     build:
       context: ./database
       dockerfile: Dockerfile
@@ -8,11 +8,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: flashcards_db
     ports:
-      - "5432:5432"
+      - "5559:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  elasticsearch:
+  elasticsearch-blue:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
     environment:
       - discovery.type=single-node
@@ -25,61 +25,62 @@ services:
         soft: -1
         hard: -1
     ports:
-      - "9200:9200" # API HTTP
-      - "9300:9300" # Komunikacja wewnętrzna elasticsearch
+      - "5550:9200" # API HTTP
+      - "5551:9300" # Komunikacja wewnętrzna elasticsearch
     volumes:
       - es_data:/usr/share/elasticsearch/data
 
-  minio:
+  minio-blue:
     image: minio/minio:latest
     environment:
-      MINIO_ROOT_USER: "user" 
-      MINIO_ROOT_PASSWORD: "password" 
+      MINIO_ROOT_USER: "user"
+      MINIO_ROOT_PASSWORD: "password"
     ports:
-      - "9000:9000" # API HTTP
-      - "9001:9001" # Konsola zarządzania
+      - "5552:9000" # API HTTP
+      - "5553:9001" # Konsola zarządzania
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
 
-  flutter:
+  flutter-blue:
     build:
       context: ./src/gui/flutter
       dockerfile: Dockerfile
     ports:
-      - "8083:8083"
+      - "5554:8083"
     volumes:
       - ./src/gui/flutter:/app
     command: flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8083
 
-  logic:
+  logic-blue:
     build:
       context: ./src/logic
       dockerfile: Dockerfile
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
+      DJANGO_ENVIRONMENT: "blue"  # Ustawienie środowiska "blue"
     ports:
-      - "8000:8000"
+      - "5555:8000"
     volumes:
       - ./src/logic:/app
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
-      - postgres
+      - postgres-blue  # Zmieniono na postgres-blue
 
-  migrate:
+  migrate-blue:
     build:
       context: ./src/logic
       dockerfile: Dockerfile
     command: sh -c "python manage.py makemigrations && python manage.py migrate"
     depends_on:
-      - postgres
+      - postgres-blue  # Zmieniono na postgres-blue
 
-  nexus:
+  nexus-blue:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "5556:8081"
     environment:
       NEXUS_ADMIN_PASSWORD: password123
     volumes:
