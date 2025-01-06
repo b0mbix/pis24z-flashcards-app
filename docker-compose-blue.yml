@@ -58,6 +58,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
+      DJANGO_ENVIRONMENT: "blue"  # Ustawienie środowiska "blue"
     ports:
       - "56565:8000"
     volumes:

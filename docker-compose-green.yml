@@ -58,6 +58,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
+      DJANGO_ENVIRONMENT: "green"  # Ustawienie środowiska "green"
     ports:
       - "8000:8000"
     volumes:
