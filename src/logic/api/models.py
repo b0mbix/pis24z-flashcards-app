@@ -10,6 +10,11 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
 
+
+    class Meta:
+        db_table = 'users'
+
+
     def __str__(self):
         return self.username
 
@@ -24,6 +29,9 @@ class FlashcardSet(models.Model):
     is_archived = models.BooleanField(default=False)
     is_public = models.BooleanField(default=False)
 
+    class Meta:
+        db_table = 'flashcardsets'
+
     def __str__(self):
         return self.name
 
@@ -35,12 +43,18 @@ class Flashcard(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = 'flashcards'    
+
     def __str__(self):
         return self.question[:50]  # Zwraca pierwsze 50 znaków pytania
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        db_table = 'tags'   
 
     def __str__(self):
         return self.name
@@ -49,6 +63,9 @@ class Tag(models.Model):
 class FlashcardSetTag(models.Model):
     set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='tags')
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='flashcard_sets')
+
+    class Meta:
+        db_table = 'flashcardsettags'   
 
     def __str__(self):
         return f"{self.set.name} - {self.tag.name}"
