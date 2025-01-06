@@ -71,7 +71,6 @@ class _AddSetState extends State<AddSet> {
               formKey.currentState!.save();
               setData["cards"] =
                   cardsData.entries.map((entry) => entry.value).toList();
-              setData["description"] = "";
               setData["user_id"] = 1;
 
               sendDataToDjango(setData);
@@ -107,6 +106,18 @@ class _AddSetState extends State<AddSet> {
                       name: "Set name",
                       customOnSaved: (newValue) {
                         setData["name"] = newValue;
+                      },
+                    )),
+                    Expanded(child: Container())
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: MyFormField(
+                      name: "Set description",
+                      customOnSaved: (newValue) {
+                        setData["descritpion"] = newValue;
                       },
                     )),
                     Expanded(child: Container())
