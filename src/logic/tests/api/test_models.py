@@ -4,7 +4,6 @@ from django.db.utils import IntegrityError
 from django.db import connections
 
 
-# Fixture, aby zamknąć połączenia z bazą danych po każdym teście
 @pytest.fixture(autouse=True)
 def close_db_connections():
     yield
