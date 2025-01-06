@@ -25,7 +25,7 @@ if ENVIRONMENT == 'blue':
             'USER': 'postgres',
             'PASSWORD': 'postgres',
             'HOST': 'postgres-blue',
-            'PORT': '56569',  # Port dla środowiska blue
+            'PORT': '5432',  # Port dla środowiska blue
         }
     }
 else:  # domyślnie "green"
