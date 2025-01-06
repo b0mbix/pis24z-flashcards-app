@@ -128,4 +128,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Dodatkowe ustawienia związane z Elasticsearch, Minio, itp. można dodać w podobny sposób
-
