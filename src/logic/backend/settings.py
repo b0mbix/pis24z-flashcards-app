@@ -36,7 +36,7 @@ else:  # domyślnie "green"
             'NAME': 'flashcards_db',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'localhost',
+            'HOST': 'postgres',
             'PORT': '5432',  # Port dla środowiska green
         }
     }
