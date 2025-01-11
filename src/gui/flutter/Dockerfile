@@ -46,12 +46,6 @@ COPY . ./
 
 USER root
 
-RUN chown -R flutteruser:flutteruser /app
-USER flutteruser
-
-RUN ls -la /app/.dart_tool
-RUN id
-
 # Budowanie aplikacji
 RUN flutter build web
 
