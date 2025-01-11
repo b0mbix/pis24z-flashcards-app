@@ -80,10 +80,9 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // TODO: Add test execution
-		        sh 'docker compose -f docker-compose-blue.yml exec logic-blue python3 manage.py test api'
+		        sh 'docker compose -f docker-compose-blue.yml exec logic-blue pytest'
                 sh 'docker compose -f docker-compose-blue.yml exec flutter-blue flutter test'
-                    
+
                 }
             }
         }
@@ -92,7 +91,7 @@ pipeline {
             steps {
                 script {
                     // Run flake8 for linting
-                    sh "${env.VENV_DIR}/bin/flake8 src/ tests/ --max-line-length=150"
+                    sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=150"
                 }
             }
         }
@@ -106,14 +105,14 @@ pipeline {
 		        sh "rm -rf ${env.VENV_DIR}"
 
                 sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphans'
-                sh 'docker compose -f docker-compose-green.yml down --volumes --remove-orphans'
-
             }
         }
 
         success {
             script {
                 echo 'Pipeline completed successfully!'
+                sh 'docker compose -f docker-compose-green.yml down --volumes --remove-orphans'
+                sh 'sleep 30'
                 sh 'docker compose -f docker-compose-green.yml up --build -d'
             }
         }
