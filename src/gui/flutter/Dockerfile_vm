@@ -26,14 +26,11 @@ RUN /sdks/flutter/bin/flutter upgrade \
 RUN adduser --disabled-password --gecos "" flutteruser \
     && chown -R flutteruser:flutteruser /sdks/flutter
 
-USER flutteruser
-
-# Włączenie wsparcia dla platformy web
-RUN flutter config --enable-web \
-    && flutter doctor -v    
-
 # Ustawienie katalogu roboczego
 WORKDIR /app
+
+# Tworzenie katalogu /app
+RUN mkdir -p /app
 
 # Kopiowanie plików zależności projektu
 COPY pubspec.yaml pubspec.lock ./
