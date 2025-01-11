@@ -63,7 +63,7 @@ services:
       - "8000:8000"
     volumes:
       - logic_data:/app
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /app/wait-for-postgres.sh python manage.py runserver 0.0.0.0:8000
     depends_on:
       - postgres
 
