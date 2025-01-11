@@ -29,3 +29,20 @@
 19. Użytkownik może wyświetlić ilość przejrzanych fiszek.
 20. Użytkownik może zobaczyć statystyki dotyczące ilości przejrzanych fiszek oraz czasu nauki.
 21. Użytkownik może zobaczyć statystyki dotyczące poprawności odpowiedzi (np. procent poprawnych odpowiedzi dla każdego zestawu).
+
+---
+
+## Podział na iteracje
+### Pierwsza iteracja
+1. *Tworzenie fiszek i zestawów*, z wyłączeniem 8 i 9
+2. *Przeglądanie fiszek*
+3. *Konta*
+
+Podsumowując - wymagania 1, 2, 3, 4, 5, 6, 7, 10, 14, 15, 16, 17, 18
+
+### Druga iteracja
+1. Wymagania 8 i 9 z *Tworzenie fiszek i zestawów*
+2. *Nauka*
+3. *Statystyki*
+
+Podsumowując - wymagania 8, 9, 11, 12, 13, 19, 20, 21
