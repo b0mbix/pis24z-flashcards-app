@@ -49,7 +49,7 @@ services:
     ports:
       - "5554:8083"
     volumes:
-      - ./src/gui/flutter:/app
+      - flutter_data:/app
     command: flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8083
 
   logic-blue:
@@ -62,7 +62,7 @@ services:
     ports:
       - "5555:8000"
     volumes:
-      - ./src/logic:/app
+      - logic_data:/app
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - postgres-blue  # Zmieniono na postgres-blue
@@ -91,3 +91,5 @@ volumes:
   nexus-data:
   es_data:
   minio_data:
+  flutter_data:
+  logic_data:
