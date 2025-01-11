@@ -47,6 +47,9 @@ RUN flutter pub get || true
 # Kopiowanie reszty plików projektu
 COPY . ./
 
+RUN ls -la /app/.dart_tool
+RUN id
+
 # Budowanie aplikacji
 RUN flutter build web
 
