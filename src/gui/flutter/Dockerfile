@@ -44,6 +44,10 @@ COPY pubspec.yaml pubspec.lock ./
 # Wykonanie polecenia 'flutter pub get' bez zmiany właściciela
 RUN flutter pub get || true
 
+USER root
+RUN chown -R flutteruser:flutteruser /app/.dart_tool
+USER flutteruser
+
 # Kopiowanie reszty plików projektu
 COPY . ./
 
