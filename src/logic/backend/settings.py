@@ -25,7 +25,7 @@ if ENVIRONMENT == 'blue':
             'NAME': 'flashcards_db_blue',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': '0.0.0.0',
+            'HOST': 'postgres-blue',
             'PORT': '5432',  # Port dla środowiska blue
         }
     }
