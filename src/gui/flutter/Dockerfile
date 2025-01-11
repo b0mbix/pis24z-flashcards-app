@@ -46,6 +46,11 @@ COPY . ./
 
 USER root
 
+# dodanie uprawnień do katalogów
+RUN chown -R flutteruser:flutteruser /app
+RUN mkdir -p /root/.pub-cache && chown -R flutteruser:flutteruser /root/.pub-cache
+USER flutteruser
+
 # Budowanie aplikacji
 RUN flutter build web
 
