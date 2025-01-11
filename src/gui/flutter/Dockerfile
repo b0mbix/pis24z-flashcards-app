@@ -44,8 +44,8 @@ COPY pubspec.yaml pubspec.lock ./
 # Wykonanie polecenia 'flutter pub get' bez zmiany właściciela
 RUN flutter pub get || true
 
-RUN ls -la /app/.dart_tool
-RUN id
+# Kopiowanie reszty plików projektu
+COPY . ./
 
 USER root
 
@@ -54,9 +54,6 @@ RUN id
 
 RUN chown -R flutteruser:flutteruser /app/.dart_tool
 USER flutteruser
-
-# Kopiowanie reszty plików projektu
-COPY . ./
 
 RUN ls -la /app/.dart_tool
 RUN id
