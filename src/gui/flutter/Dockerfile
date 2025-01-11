@@ -26,9 +26,6 @@ RUN /sdks/flutter/bin/flutter upgrade \
 RUN adduser --disabled-password --gecos "" flutteruser \
     && chown -R flutteruser:flutteruser /sdks/flutter
 
-# Set permissions for the working directory
-RUN mkdir -p /app && chown -R flutteruser:flutteruser /app
-
 USER flutteruser
 
 # Włączenie wsparcia dla platformy web
@@ -49,10 +46,7 @@ COPY . ./
 
 USER root
 
-RUN ls -la /app/.dart_tool
-RUN id
-
-RUN chown -R flutteruser:flutteruser /app/.dart_tool
+RUN chown -R flutteruser:flutteruser /app
 USER flutteruser
 
 RUN ls -la /app/.dart_tool
