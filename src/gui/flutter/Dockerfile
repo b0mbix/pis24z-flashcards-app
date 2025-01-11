@@ -35,6 +35,9 @@ RUN flutter config --enable-web \
 # Ustawienie katalogu roboczego
 WORKDIR /app
 
+# Tworzenie katalogu /app
+RUN mkdir -p /app
+
 # Kopiowanie plików zależności projektu
 COPY pubspec.yaml pubspec.lock ./
 
@@ -48,7 +51,6 @@ USER root
 
 # dodanie uprawnień do katalogów
 RUN chown -R flutteruser:flutteruser /app
-# RUN mkdir -p /root/.pub-cache && chown -R flutteruser:flutteruser /root/.pub-cache
 USER flutteruser
 
 # Budowanie aplikacji
