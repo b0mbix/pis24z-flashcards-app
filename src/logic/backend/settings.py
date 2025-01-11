@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-i1-myd#3&cj#m-6qmj5
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 # Lista dozwolonych hostów
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 # Sprawdzenie, czy środowisko to "blue" czy "green"
 ENVIRONMENT = os.getenv('DJANGO_ENVIRONMENT', 'green')  # Domyślnie "green", jeśli nie ustawiono
