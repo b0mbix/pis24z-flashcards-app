@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Instalacja Fluttera
 RUN mkdir -p /sdks \
-    && curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.13.7-stable.tar.xz \
+    && curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.1-stable.tar.xz \
     && tar -xf flutter.tar.xz -C /sdks \
     && rm flutter.tar.xz
 
@@ -48,7 +48,7 @@ USER root
 
 # dodanie uprawnień do katalogów
 RUN chown -R flutteruser:flutteruser /app
-RUN mkdir -p /root/.pub-cache && chown -R flutteruser:flutteruser /root/.pub-cache
+# RUN mkdir -p /root/.pub-cache && chown -R flutteruser:flutteruser /root/.pub-cache
 USER flutteruser
 
 # Budowanie aplikacji
