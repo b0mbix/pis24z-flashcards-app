@@ -34,15 +34,15 @@
 
 ## Podział na iteracje
 ### Pierwsza iteracja
-1. *Tworzenie fiszek i zestawów*, z wyłączeniem 8 i 9
+1. *Tworzenie fiszek i zestawów*, z wyłączeniem 7, 8 i 9
 2. *Przeglądanie fiszek*
 3. *Konta*
 
 Podsumowując - wymagania 1, 2, 3, 4, 5, 6, 7, 10, 14, 15, 16, 17, 18
 
 ### Druga iteracja
-1. Wymagania 8 i 9 z *Tworzenie fiszek i zestawów*
+1. Wymagania 7, 8 i 9 z *Tworzenie fiszek i zestawów*
 2. *Nauka*
 3. *Statystyki*
 
-Podsumowując - wymagania 8, 9, 11, 12, 13, 19, 20, 21
+Podsumowując - wymagania 7, 8, 9, 11, 12, 13, 19, 20, 21
