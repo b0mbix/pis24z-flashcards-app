@@ -25,7 +25,7 @@ if ENVIRONMENT == 'blue':
             'NAME': 'flashcards_db_blue',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'postgres-blue',
+            'HOST': '0.0.0.0',
             'PORT': '5432',  # Port dla środowiska blue
         }
     }
@@ -36,10 +36,13 @@ else:  # domyślnie "green"
             'NAME': 'flashcards_db',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'postgres',
+            'HOST': '0.0.0.0',
             'PORT': '5432',  # Port dla środowiska green
         }
     }
+
+print("ENVIRONMENT:", ENVIRONMENT)
+print("DATABASES:", DATABASES)
 
 # Aplikacje w projekcie
 INSTALLED_APPS = [
