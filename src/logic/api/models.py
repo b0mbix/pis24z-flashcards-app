@@ -18,7 +18,9 @@ class User(models.Model):
 
 
 class FlashcardSet(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcard_sets')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='flashcard_sets'
+    )
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,7 +37,9 @@ class FlashcardSet(models.Model):
 
 
 class Flashcard(models.Model):
-    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='flashcards')
+    set = models.ForeignKey(
+        FlashcardSet, on_delete=models.CASCADE, related_name='flashcards'
+    )
     question = models.TextField()
     answer = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -59,8 +63,12 @@ class Tag(models.Model):
 
 
 class FlashcardSetTag(models.Model):
-    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_tags')
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagged_flashcard_sets')
+    set = models.ForeignKey(
+        FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_tags'
+    )
+    tag = models.ForeignKey(
+        Tag, on_delete=models.CASCADE, related_name='tagged_flashcard_sets'
+    )
 
     class Meta:
         db_table = 'flashcardsettags'
