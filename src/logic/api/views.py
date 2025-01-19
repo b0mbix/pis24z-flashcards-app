@@ -16,10 +16,7 @@ def add_user(request):
         data = request.data
         user = User.objects.create(
             username=data.get('username'),
-            email=data.get('email'),
             password_hash=data.get('password_hash'),
-            birth_date=data.get('birth_date'),
-            is_premium=data.get('is_premium', False)
         )
         return Response({"message": "User created successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
     except Exception as e:
@@ -31,9 +28,6 @@ def get_user(request, user_id):
         user = User.objects.get(id=user_id)
         return Response({
             "username": user.username,
-            "email": user.email,
-            "birth_date": user.birth_date,
-            "is_premium": user.is_premium
         }, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -44,10 +38,7 @@ def update_user(request, user_id):
         user = User.objects.get(id=user_id)
         data = request.data
         user.username = data.get('username', user.username)
-        user.email = data.get('email', user.email)
         user.password_hash = data.get('password_hash', user.password_hash)
-        user.birth_date = data.get('birth_date', user.birth_date)
-        user.is_premium = data.get('is_premium', user.is_premium)
         user.save()
         return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:

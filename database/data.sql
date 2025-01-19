@@ -1,8 +1,8 @@
-INSERT INTO Users (username, email, password_hash, birth_date, is_premium, created_at, last_login) VALUES
-('jan_kowalski', 'jan.kowalski@example.com', '$2b$12$9xN1p', '1985-02-10', TRUE, '2024-01-01 10:00:00', '2024-12-01 18:00:00'),
-('anna_nowak', 'anna.nowak@example.com', '$2b$12$4h', '1992-07-15', FALSE, '2024-01-15 12:00:00', '2024-12-15 14:00:00'),
-('piotr_wisniewski', 'piotr.wisniewski@example.com', '$2b$12$oz7NNl8/', '1990-11-20', TRUE, '2024-02-01 08:30:00', NULL),
-('magdalena_krawczyk', 'magdalena.krawczyk@example.com', '$2b$12$d5x', '2000-04-08', FALSE, '2024-03-01 09:00:00', '2024-12-10 16:00:00');
+INSERT INTO Users (username, password_hash, created_at) VALUES
+('jan_kowalski', '$2b$12$9xN1p','2024-01-01 10:00:00'),
+('anna_nowak', '$2b$12$4h', '2024-01-15 12:00:00'),
+('piotr_wisniewski', '$2b$12$oz7NNl8/', '2024-02-01 08:30:00'),
+('magdalena_krawczyk', '$2b$12$d5x', '2024-03-01 09:00:00',);
 
 INSERT INTO FlashcardSets (user_id, name, description, created_at, updated_at, views_count, is_archived, is_public) VALUES
 (1, 'Podstawowe słówka hiszpańskie', 'Zestaw fiszek z podstawowymi słówkami w języku hiszpańskim.', '2024-01-02 10:00:00', '2024-01-02 10:00:00', 120, FALSE, TRUE),
