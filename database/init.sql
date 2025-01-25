@@ -57,18 +57,6 @@ CREATE TABLE FlashcardSetStats (
     total_study_time INTERVAL DEFAULT INTERVAL '0 seconds'
 );
 
-CREATE TABLE FlashcardStats (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES Users(id),
-    flashcard_id INT REFERENCES Flashcards(id),
-    mode VARCHAR(20) NOT NULL CHECK (mode IN ('simple', 'stages', 'percent')),
-    view_count INT DEFAULT 0,
-    stage INT, -- Dla trybu 'stages'
-    learned BOOLEAN, -- Dla trybu 'stages'
-    learning_stage VARCHAR(20) CHECK (learning_stage IN ('not_learned', 'still_learning', 'almost_learned', 'learned')) DEFAULT 'not_learned', -- Dla trybu 'percent'
-    total_study_time INTERVAL DEFAULT INTERVAL '0 seconds'
-);
-
 CREATE TABLE FlashcardStatsSimple (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Users(id),
