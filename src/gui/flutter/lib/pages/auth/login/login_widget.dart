@@ -305,43 +305,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     .asValidator(context),
                               ),
                             ),
-                            if (!(isWeb
-                                ? MediaQuery.viewInsetsOf(context).bottom > 0
-                                : _isKeyboardVisible))
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    16.0, 12.0, 16.0, 0.0),
-                                child: FFButtonWidget(
-                                  onPressed: () {
-                                    print('Button pressed ...');
-                                  },
-                                  text: 'Forgot Password?',
-                                  options: FFButtonOptions(
-                                    width: double.infinity,
-                                    height: 60.0,
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 0.0),
-                                    iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 0.0),
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    textStyle: FlutterFlowTheme.of(context)
-                                        .titleLarge
-                                        .override(
-                                          fontFamily: 'Inter Tight',
-                                          letterSpacing: 0.0,
-                                        ),
-                                    elevation: 0.0,
-                                    borderSide: BorderSide(
-                                      color: Colors.transparent,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    hoverColor:
-                                        FlutterFlowTheme.of(context).alternate,
-                                  ),
-                                ),
-                              ),
                           ],
                         ),
                       ),
@@ -354,8 +317,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                       padding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 24.0),
                       child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
+                        onPressed: () async {
+                          context.pushNamed('MainPage');
                         },
                         text: 'Login',
                         options: FFButtonOptions(

@@ -2,6 +2,7 @@ import '/components/card_row_widget.dart';
 import '/components/input_row_widget.dart';
 import '/components/new_set_dialog_widget.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -85,49 +86,69 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  50.0, 0.0, 50.0, 0.0),
-                              child: FlutterFlowDropDown<String>(
-                                controller: _model.dropDownValueController1 ??=
-                                    FormFieldController<String>(null),
-                                options: [
-                                  'Set 1',
-                                  'Set 2',
-                                  'Set 3',
-                                  'Set 4',
-                                  'Set 5'
-                                ],
-                                onChanged: (val) => safeSetState(
-                                    () => _model.dropDownValue1 = val),
-                                width: 200.0,
-                                height: 40.0,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Inter',
-                                      letterSpacing: 0.0,
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      50.0, 0.0, 50.0, 0.0),
+                                  child: FlutterFlowDropDown<String>(
+                                    controller:
+                                        _model.dropDownValueController1 ??=
+                                            FormFieldController<String>(null),
+                                    options: [
+                                      'Set 1',
+                                      'Set 2',
+                                      'Set 3',
+                                      'Set 4',
+                                      'Set 5'
+                                    ],
+                                    onChanged: (val) => safeSetState(
+                                        () => _model.dropDownValue1 = val),
+                                    width: 200.0,
+                                    height: 40.0,
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                          fontFamily: 'Inter',
+                                          letterSpacing: 0.0,
+                                        ),
+                                    hintText: 'Select...',
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      size: 24.0,
                                     ),
-                                hintText: 'Select...',
-                                icon: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  size: 24.0,
+                                    fillColor: FlutterFlowTheme.of(context)
+                                        .secondaryBackground,
+                                    elevation: 2.0,
+                                    borderColor: Colors.transparent,
+                                    borderWidth: 0.0,
+                                    borderRadius: 8.0,
+                                    margin: EdgeInsetsDirectional.fromSTEB(
+                                        12.0, 0.0, 12.0, 0.0),
+                                    hidesUnderline: true,
+                                    isOverButton: false,
+                                    isSearchable: false,
+                                    isMultiSelect: false,
+                                  ),
                                 ),
-                                fillColor: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                elevation: 2.0,
-                                borderColor: Colors.transparent,
-                                borderWidth: 0.0,
-                                borderRadius: 8.0,
-                                margin: EdgeInsetsDirectional.fromSTEB(
-                                    12.0, 0.0, 12.0, 0.0),
-                                hidesUnderline: true,
-                                isOverButton: false,
-                                isSearchable: false,
-                                isMultiSelect: false,
-                              ),
+                                FlutterFlowIconButton(
+                                  borderRadius: 8.0,
+                                  buttonSize: 40.0,
+                                  fillColor:
+                                      FlutterFlowTheme.of(context).primary,
+                                  icon: Icon(
+                                    Icons.favorite_border,
+                                    color: FlutterFlowTheme.of(context).info,
+                                    size: 24.0,
+                                  ),
+                                  onPressed: () {
+                                    print('IconButton pressed ...');
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),

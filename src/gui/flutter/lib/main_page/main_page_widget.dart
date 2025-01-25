@@ -63,12 +63,12 @@ class _MainPageWidgetState extends State<MainPageWidget> {
             FlutterFlowIconButton(
               buttonSize: 48.0,
               icon: Icon(
-                Icons.account_circle_outlined,
+                Icons.settings,
                 color: FlutterFlowTheme.of(context).primaryText,
                 size: 24.0,
               ),
-              onPressed: () {
-                print('IconButton pressed ...');
+              onPressed: () async {
+                context.pushNamed('AddCards');
               },
             ),
           ],
@@ -236,8 +236,8 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                     },
                   ),
                   FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
+                    onPressed: () async {
+                      context.pushNamed('AddCards');
                     },
                     text: 'Create New Set',
                     icon: Icon(

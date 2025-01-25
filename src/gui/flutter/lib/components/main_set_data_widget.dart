@@ -82,7 +82,15 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                                 ),
                       ),
                       Text(
-                        '120 cards • Last studied 2 days ago',
+                        'Description',
+                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                              fontFamily: 'Inter',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      Text(
+                        'Ilość fiszek',
                         style: FlutterFlowTheme.of(context).bodySmall.override(
                               fontFamily: 'Inter',
                               color: FlutterFlowTheme.of(context).secondaryText,
@@ -130,10 +138,12 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                   min: 0.0,
                   max: 100.0,
                   value: _model.sliderValue ??= 65.0,
-                  onChanged: (newValue) {
-                    newValue = double.parse(newValue.toStringAsFixed(4));
-                    safeSetState(() => _model.sliderValue = newValue);
-                  },
+                  onChanged: true
+                      ? null
+                      : (newValue) {
+                          newValue = double.parse(newValue.toStringAsFixed(4));
+                          safeSetState(() => _model.sliderValue = newValue);
+                        },
                 ),
               ),
             ].divide(SizedBox(height: 16.0)),
