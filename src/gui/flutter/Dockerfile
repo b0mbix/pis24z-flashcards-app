@@ -1,29 +1,27 @@
-FROM ubuntu:18.04
+# Use a compatible Flutter version
+FROM instrumentisto/flutter:latest AS build
 
-# Prerequisites
-RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
+# Set the working directory inside the container
+WORKDIR /app
 
-# Set up new user
-RUN useradd -ms /bin/bash developer
-USER developer
-WORKDIR /home/developer
+# Copy the Flutter app source code to the container
+COPY . /app
 
-# Prepare Android directories and system variables
-RUN mkdir -p Android/sdk
-ENV ANDROID_SDK_ROOT /home/developer/Android/sdk
-RUN mkdir -p .android && touch .android/repositories.cfg
+# Enable Flutter web
+RUN flutter config --enable-web
 
-# Set up Android SDK
-RUN wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-RUN unzip sdk-tools.zip && rm sdk-tools.zip
-RUN mv tools Android/sdk/tools
-RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses
-RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "platform-tools" "platforms;android-29" "sources;android-29"
-ENV PATH "$PATH:/home/developer/Android/sdk/platform-tools"
+# Fetch dependencies and build the Flutter web app
+RUN flutter pub get
+RUN flutter build web
 
-# Download Flutter SDK
-RUN git clone https://github.com/flutter/flutter.git
-ENV PATH "$PATH:/home/developer/flutter/bin"
+# Use an Nginx base image to serve the web app
+FROM nginx:stable-alpine
 
-# Run basic check to download Dark SDK
-RUN flutter doctor
+# Copy the built Flutter web app to the Nginx HTML directory
+COPY --from=build /app/build/web /usr/share/nginx/html
+
+# Expose port 80 for web traffic
+EXPOSE 80
+
+# Start Nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
