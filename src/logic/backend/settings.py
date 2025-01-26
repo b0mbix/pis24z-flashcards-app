@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Budowanie ścieżek w projekcie
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,20 @@ else:  # domyślnie "green"
 print("ENVIRONMENT:", ENVIRONMENT)
 print("DATABASES:", DATABASES)
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 # Aplikacje w projekcie
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,6 +70,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
 ]
 

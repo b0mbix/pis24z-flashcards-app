@@ -1,13 +1,57 @@
 # from django.http import JsonResponse
 # from rest_framework.views import APIView
+from logic.api.serializers import LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from datetime import datetime, timedelta
-from django.views.decorators.csrf import csrf_exempt
-import json
 from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsSimple, FlashcardStatsStages, FlashcardStatsPercent
+
+
+@api_view(['POST'])
+def register(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        refresh = RefreshToken.for_user(serializer.instance)
+        return Response(
+            {
+                "message": "User created successfully",
+                "user_id": serializer.data.get('id'),
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+            },
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def login(request):
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.validated_data
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                "message": "Login successful",
+                "user_id": user.id,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+            },
+            status=status.HTTP_200_OK
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Restrict access to authenticated users
+def test_auth(request):
+    return Response({"message": "You are authenticated!"}, status=200)
+
 
 # User
 
