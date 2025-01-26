@@ -70,6 +70,31 @@ def get_flashcard_sets_with_details(request):
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def get_flashcard_specified_set_with_details(request, set_id):
+    if request.method == 'GET':
+        try:
+            flashcard_set = FlashcardSet.objects.get(id=set_id)
+            response = []
+
+            flashcards = Flashcard.objects.filter(set=flashcard_set)
+            tags = FlashcardSetTag.objects.filter(set=flashcard_set)
+            response.append({
+                "id": flashcard_set.id,
+                "name": flashcard_set.name,
+                "description": flashcard_set.description,
+                "user_id": flashcard_set.user.id,
+                "flashcards": [{"question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards],
+                "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in tags]
+            })
+
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['POST'])
 def add_flashcard(request):
     if request.method == 'POST':
