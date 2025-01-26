@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
 
 # TODO - commented to satiate flake. to delete if won't be needed in the future
+import datetime
 
 
 @api_view(['POST'])
@@ -112,6 +113,26 @@ def add_flashcard(request):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_flashcard(request):
+    try:
+        flashcard_id = request.get('flashcard_id')
+        flashcard = Flashcard.objects.get(id=flashcard_id)
+
+        try:
+            set_id = flashcard.set
+            flashcard_set = FlashcardSet.objects.get(id=set_id)
+            flashcard_set.updated_at = datetime.now()
+            flashcard_set.save()
+        except FlashcardSet.DoesNotExist:
+            return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        flashcard.delete()
+        return Response({"message": "Flashcard deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except Flashcard.DoesNotExist:
+        return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
