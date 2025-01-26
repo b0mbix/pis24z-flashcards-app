@@ -34,13 +34,23 @@ urlpatterns = [
     path('flashcard-favorites/add', views.add_flashcard_to_favorites, name='add_flashcard_to_favorites'),
     path('flashcard-favorites/<int:user_id>/delete', views.remove_flashcard_from_favorites, name='delete_flashcard_from_favorites'),
 
-    path('flashcard-set-stats/add', views.create_flashcard_set_stats, name='create_flashcard_set_stats'),
-    path('flashcard-set-stats/<int:user_id>/update', views.update_flashcard_set_stats, name='update_flashcard_set_stats'),
+    path('flashcard-set-stats/add/', views.add_flashcard_set_stats, name='add_flashcard_set_stats'),
+    path('flashcard-set-stats/<int:stats_id>/get/', views.get_flashcard_set_stats, name='get_flashcard_set_stats'),
+    path('flashcard-set-stats/<int:stats_id>/update/', views.update_flashcard_set_stats, name='update_flashcard_set_stats'),
+    path('flashcard-set-stats/<int:stats_id>/delete/', views.delete_flashcard_set_stats, name='delete_flashcard_set_stats'),
 
-    path('flashcard-stats-percent/add', views.create_flashcard_stats_percent, name='create_flashcard_stats_percent'),
-    path('flashcard-stats-percent/all', views.get_flashcards_stats_percent, name='get_flashcards_stats_percent'),
-    path('flashcard-stats-percent/update', views.update_flashcard_stats_percent, name='update_flashcard_stats_percent'),
+    path('flashcard-stats-simple/add/', views.add_flashcard_stats_simple, name='add_flashcard_stats_simple'),
+    path('flashcard-stats-simple/<int:stats_id>/get/', views.get_flashcard_stats_simple, name='get_flashcard_stats_simple'),
+    path('flashcard-stats-simple/<int:stats_id>/update/', views.update_flashcard_stats_simple, name='update_flashcard_stats_simple'),
+    path('flashcard-stats-simple/<int:stats_id>/delete/', views.delete_flashcard_stats_simple, name='delete_flashcard_stats_simple'),
 
-    path('flashcard-set-stats/reset/', views.reset_flashcard_set_stats, name='reset_flashcard_set_stats'),
+    path('flashcard-stats-stages/add/', views.add_flashcard_stats_stages, name='add_flashcard_stats_stages'),
+    path('flashcard-stats-stages/<int:stats_id>/get/', views.get_flashcard_stats_stages, name='get_flashcard_stats_stages'),
+    path('flashcard-stats-stages/<int:stats_id>/update/', views.update_flashcard_stats_stages, name='update_flashcard_stats_stages'),
+    path('flashcard-stats-stages/<int:stats_id>/delete/', views.delete_flashcard_stats_stages, name='delete_flashcard_stats_stages'),
 
+    path('flashcard-stats-percent/add/', views.add_flashcard_stats_percent, name='add_flashcard_stats_percent'),
+    path('flashcard-stats-percent/<int:stats_id>/get/', views.get_flashcard_stats_percent, name='get_flashcard_stats_percent'),
+    path('flashcard-stats-percent/<int:stats_id>/update/', views.update_flashcard_stats_percent, name='update_flashcard_stats_percent'),
+    path('flashcard-stats-percent/<int:stats_id>/delete/', views.delete_flashcard_stats_percent, name='delete_flashcard_stats_percent')
 ]
