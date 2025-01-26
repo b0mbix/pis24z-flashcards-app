@@ -4,18 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsPercent
-from enum import Enum
-
-LEARNING_STAGES = [
-    'not_learned', 
-    'learning', 
-    'almost_learned', 
-    'learned'
-]
+from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsSimple, FlashcardStatsStages, FlashcardStatsPercent
 
 # User
 
@@ -339,151 +331,202 @@ def remove_flashcard_from_favorites(request):
 # FlashcardSetStats
 
 @api_view(['POST'])
-def create_flashcard_set_stats(request):
+def add_flashcard_set_stats(request):
     try:
         data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        
-        flashcard_set_stats = FlashcardSetStats.objects.create(
-            user=user,
-            set=flashcard_set,
+        stats = FlashcardSetStats.objects.create(
+            user_id=data.get('user_id'),
+            set_id=data.get('set_id'),
             flashcards_viewed=data.get('flashcards_viewed', 0),
-            total_study_time=data.get('total_study_time', '0:00:00'),
-            correct_answers=data.get('correct_answers', 0),
-            incorrect_answers=data.get('incorrect_answers', 0),
-            completion_percentage=data.get('completion_percentage', 0)
+            total_study_time=timedelta(seconds=data.get('total_study_time', 0))
         )
-        return Response({"message": "Flashcard set stats created successfully", "stats_id": flashcard_set_stats.id}, status=status.HTTP_201_CREATED)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-
-@api_view(['PUT'])
-def update_flashcard_set_stats(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        
-        flashcard_set_stats = FlashcardSetStats.objects.get(user=user, set=flashcard_set)
-        flashcard_set_stats.flashcards_viewed = data.get('flashcards_viewed', flashcard_set_stats.flashcards_viewed)
-        flashcard_set_stats.total_study_time = data.get('total_study_time', flashcard_set_stats.total_study_time)
-        flashcard_set_stats.correct_answers = data.get('correct_answers', flashcard_set_stats.correct_answers)
-        flashcard_set_stats.incorrect_answers = data.get('incorrect_answers', flashcard_set_stats.incorrect_answers)
-        flashcard_set_stats.completion_percentage = data.get('completion_percentage', flashcard_set_stats.completion_percentage)
-        flashcard_set_stats.save()
-        
-        return Response({"message": "Flashcard set stats updated successfully"}, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSetStats.DoesNotExist:
-        return Response({"error": "Flashcard set stats not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-# FlashcardStatsPercent
-
-@api_view(['GET'])
-def get_flashcards_stats_percent(request):
-    flashcards = FlashcardStatsPercent.objects.all()
-    response = []
-    for flashcard in flashcards:
-        response.append({
-            "id": flashcard.id,
-            "user_id": flashcard.user.id,
-            "flashcard_id": flashcard.flashcard.id,
-            "view_count": flashcard.view_count,
-            "learning_stage": flashcard.learning_stage,
-        })
-    return Response(response, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def create_flashcard_stats_percent(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
-        
-        flashcard_stats = FlashcardStatsPercent.objects.create(
-            user=user,
-            flashcard=flashcard,
-            view_count=data.get('view_count', 0),
-            learning_stage=data.get('learning_stage', 'not_learned')
-        )
-        return Response({"message": "Flashcard stats created successfully", "stats_id": flashcard_stats.id}, status=status.HTTP_201_CREATED)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except Flashcard.DoesNotExist:
-        return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['PUT'])
-def update_flashcard_stats_percent(request):
-    try:
-        data = request.data
-        to_level_up = data.get("level_up", [])
-        to_level_down = data.get("level_down", [])
-
-        for flashcard_id in to_level_up:
-            flashcard = FlashcardStatsPercent.objects.get(id=flashcard_id)
-            current_index = LEARNING_STAGES.index(flashcard.learning_stage)  
-            if current_index < len(LEARNING_STAGES) - 1: 
-                flashcard.learning_stage = LEARNING_STAGES[current_index + 1]
-            flashcard.view_count += 1
-            flashcard.save()
-        
-
-        for flashcard_id in to_level_down:
-            flashcard = FlashcardStatsPercent.objects.get(id=flashcard_id)
-            current_index = LEARNING_STAGES.index(flashcard.learning_stage)  
-            if current_index > 0: 
-                flashcard.learning_stage = LEARNING_STAGES[current_index - 1]
-            flashcard.view_count += 1
-            flashcard.save()
-
-        return Response({"message": "Flashcard stats updated successfully"}, status=status.HTTP_200_OK)
-
-    except FlashcardStatsPercent.DoesNotExist:
-        return Response({"error": "Flashcard stats not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "FlashcardSetStats created successfully", "id": stats.id}, status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-# Reset Statystyk uczenia fiszek
+@api_view(['GET'])
+def get_flashcard_set_stats(request, stats_id):
+    try:
+        stats = FlashcardSetStats.objects.get(id=stats_id)
+        return Response({
+            "user_id": stats.user.id,
+            "set_id": stats.set.id,
+            "flashcards_viewed": stats.flashcards_viewed,
+            "total_study_time": stats.total_study_time.total_seconds(),
+        }, status=status.HTTP_200_OK)
+    except FlashcardSetStats.DoesNotExist:
+        return Response({"error": "FlashcardSetStats not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT'])
-def reset_flashcard_set_stats(request):
+def update_flashcard_set_stats(request, stats_id):
+    try:
+        stats = FlashcardSetStats.objects.get(id=stats_id)
+        data = request.data
+        stats.flashcards_viewed = data.get('flashcards_viewed', stats.flashcards_viewed)
+        stats.total_study_time = timedelta(seconds=data.get('total_study_time', stats.total_study_time.total_seconds()))
+        stats.save()
+        return Response({"message": "FlashcardSetStats updated successfully"}, status=status.HTTP_200_OK)
+    except FlashcardSetStats.DoesNotExist:
+        return Response({"error": "FlashcardSetStats not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_flashcard_set_stats(request, stats_id):
+    try:
+        stats = FlashcardSetStats.objects.get(id=stats_id)
+        stats.delete()
+        return Response({"message": "FlashcardSetStats deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except FlashcardSetStats.DoesNotExist:
+        return Response({"error": "FlashcardSetStats not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# FlashcardStatsSimple
+
+@api_view(['POST'])
+def add_flashcard_stats_simple(request):
     try:
         data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        
-        flashcard_set_stats = FlashcardSetStats.objects.get(user=user, set=flashcard_set)
-        flashcard_set_stats.flashcards_viewed = 0
-        flashcard_set_stats.total_study_time = '0:00:00'
-        flashcard_set_stats.correct_answers = 0
-        flashcard_set_stats.incorrect_answers = 0
-        flashcard_set_stats.completion_percentage = 0
-        flashcard_set_stats.save()
+        stats = FlashcardStatsSimple.objects.create(
+            user_id=data.get('user_id'),
+            flashcard_id=data.get('flashcard_id'),
+            view_count=data.get('view_count', 0),
+        )
+        return Response({"message": "FlashcardStatsSimple created successfully", "id": stats.id}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        flashcards = Flashcard.objects.filter(set=flashcard_set)
-        for flashcard in flashcards:
-            flashcard_stats = FlashcardStatsPercent.objects.get(user=user, flashcard=flashcard)
-            flashcard_stats.view_count = 0
-            flashcard_stats.learning_stage = 'not_learned'
-            flashcard_stats.save()
-        
-        return Response({"message": "Flashcard set stats and flashcard stats reset successfully"}, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSetStats.DoesNotExist:
-        return Response({"error": "Flashcard set stats not found"}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_flashcard_stats_simple(request, stats_id):
+    try:
+        stats = FlashcardStatsSimple.objects.get(id=stats_id)
+        return Response({
+            "user_id": stats.user.id,
+            "flashcard_id": stats.flashcard.id,
+            "view_count": stats.view_count,
+        }, status=status.HTTP_200_OK)
+    except FlashcardStatsSimple.DoesNotExist:
+        return Response({"error": "FlashcardStatsSimple not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PUT'])
+def update_flashcard_stats_simple(request, stats_id):
+    try:
+        stats = FlashcardStatsSimple.objects.get(id=stats_id)
+        data = request.data
+        stats.view_count = data.get('view_count', stats.view_count)
+        stats.save()
+        return Response({"message": "FlashcardStatsSimple updated successfully"}, status=status.HTTP_200_OK)
+    except FlashcardStatsSimple.DoesNotExist:
+        return Response({"error": "FlashcardStatsSimple not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_flashcard_stats_simple(request, stats_id):
+    try:
+        stats = FlashcardStatsSimple.objects.get(id=stats_id)
+        stats.delete()
+        return Response({"message": "FlashcardStatsSimple deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except FlashcardStatsSimple.DoesNotExist:
+        return Response({"error": "FlashcardStatsSimple not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# FlashcardStatsStages
+
+@api_view(['POST'])
+def add_flashcard_stats_stages(request):
+    try:
+        data = request.data
+        stats = FlashcardStatsStages.objects.create(
+            user_id=data.get('user_id'),
+            flashcard_id=data.get('flashcard_id'),
+            view_count=data.get('view_count', 0),
+            stage=data.get('stage', 1),
+            learned=data.get('learned', False),
+        )
+        return Response({"message": "FlashcardStatsStages created successfully", "id": stats.id}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_flashcard_stats_stages(request, stats_id):
+    try:
+        stats = FlashcardStatsStages.objects.get(id=stats_id)
+        return Response({
+            "user_id": stats.user.id,
+            "flashcard_id": stats.flashcard.id,
+            "view_count": stats.view_count,
+            "stage": stats.stage,
+            "learned": stats.learned,
+        }, status=status.HTTP_200_OK)
+    except FlashcardStatsStages.DoesNotExist:
+        return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PUT'])
+def update_flashcard_stats_stages(request, stats_id):
+    try:
+        stats = FlashcardStatsStages.objects.get(id=stats_id)
+        data = request.data
+        stats.view_count = data.get('view_count', stats.view_count)
+        stats.stage = data.get('stage', stats.stage)
+        stats.learned = data.get('learned', stats.learned)
+        stats.save()
+        return Response({"message": "FlashcardStatsStages updated successfully"}, status=status.HTTP_200_OK)
+    except FlashcardStatsStages.DoesNotExist:
+        return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_flashcard_stats_stages(request, stats_id):
+    try:
+        stats = FlashcardStatsStages.objects.get(id=stats_id)
+        stats.delete()
+        return Response({"message": "FlashcardStatsStages deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except FlashcardStatsStages.DoesNotExist:
+        return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# FlashcardStatsPercent 
+
+@api_view(['POST'])
+def add_flashcard_stats_percent(request):
+    try:
+        data = request.data
+        stats = FlashcardStatsPercent.objects.create(
+            user_id=data.get('user_id'),
+            flashcard_id=data.get('flashcard_id'),
+            view_count=data.get('view_count', 0),
+            learning_stage=data.get('learning_stage', 'not_learned'),
+        )
+        return Response({"message": "FlashcardStatsPercent created successfully", "id": stats.id}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_flashcard_stats_percent(request, stats_id):
+    try:
+        stats = FlashcardStatsPercent.objects.get(id=stats_id)
+        return Response({
+            "user_id": stats.user.id,
+            "flashcard_id": stats.flashcard.id,
+            "view_count": stats.view_count,
+            "learning_stage": stats.learning_stage,
+        }, status=status.HTTP_200_OK)
     except FlashcardStatsPercent.DoesNotExist:
-        return Response({"error": "Some flashcard stats not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PUT'])
+def update_flashcard_stats_percent(request, stats_id):
+    try:
+        stats = FlashcardStatsPercent.objects.get(id=stats_id)
+        data = request.data
+        stats.view_count = data.get('view_count', stats.view_count)
+        stats.learning_stage = data.get('learning_stage', stats.learning_stage)
+        stats.save()
+        return Response({"message": "FlashcardStatsPercent updated successfully"}, status=status.HTTP_200_OK)
+    except FlashcardStatsPercent.DoesNotExist:
+        return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_flashcard_stats_percent(request, stats_id):
+    try:
+        stats = FlashcardStatsPercent.objects.get(id=stats_id)
+        stats.delete()
+        return Response({"message": "FlashcardStatsPercent deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except FlashcardStatsPercent.DoesNotExist:
+        return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
