@@ -475,10 +475,6 @@ def reset_flashcard_set_stats(request):
         for flashcard in flashcards:
             flashcard_stats = FlashcardStatsPercent.objects.get(user=user, flashcard=flashcard)
             flashcard_stats.view_count = 0
-            flashcard_stats.correct_answers = 0
-            flashcard_stats.incorrect_answers = 0
-            flashcard_stats.total_study_time = '0:00:00'
-            flashcard_stats.last_answered_at = None
             flashcard_stats.learning_stage = 'not_learned'
             flashcard_stats.save()
         
