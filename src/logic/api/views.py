@@ -6,9 +6,9 @@ from rest_framework.decorators import api_view
 # from django.views.decorators.csrf import csrf_exempt
 # import json
 from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag
+from datetime import datetime
 
 # TODO - commented to satiate flake. to delete if won't be needed in the future
-import datetime
 
 
 @api_view(['POST'])
@@ -62,7 +62,7 @@ def get_flashcard_sets_with_details(request):
                     "name": flashcard_set.name,
                     "description": flashcard_set.description,
                     "user_id": flashcard_set.user.id,
-                    "flashcards": [{"question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards],
+                    "flashcards": [{"card_id": flashcard.id , "question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards],
                     "tags": [{"id": tag.tag.id, "name": tag.tag.name} for tag in tags]
                 })
             return Response(response, status=status.HTTP_200_OK)
@@ -115,13 +115,12 @@ def add_flashcard(request):
     return Response({"message": "Invalid request method"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
-def delete_flashcard(request):
+def remove_flashcard(request, flashcard_id):
     try:
-        flashcard_id = request.get('flashcard_id')
         flashcard = Flashcard.objects.get(id=flashcard_id)
 
         try:
-            set_id = flashcard.set
+            set_id = flashcard.set.id
             flashcard_set = FlashcardSet.objects.get(id=set_id)
             flashcard_set.updated_at = datetime.now()
             flashcard_set.save()
