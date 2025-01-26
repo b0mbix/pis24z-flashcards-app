@@ -144,7 +144,7 @@ class FlashcardStats(models.Model):
             ('not_learned', 'Not Learned'),
             ('learning', 'Learning'),
             ('almost_learned', 'Almost Learned'),
-            ('mastered', 'Mastered')
+            ('learned', 'Learned')
         ],
         default='not_learned'
     )

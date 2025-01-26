@@ -1,8 +1,13 @@
+
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    birth_date DATE,
+    is_premium BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP
 );
 
 CREATE TABLE FlashcardSets (
@@ -54,14 +59,17 @@ CREATE TABLE FlashcardSetStats (
     user_id INT REFERENCES Users(id),
     set_id INT REFERENCES FlashcardSets(id),
     flashcards_viewed INT DEFAULT 0,
-    total_study_time INTERVAL DEFAULT INTERVAL '0 seconds'
+    total_study_time INTERVAL DEFAULT INTERVAL '0 seconds',
+    correct_answers INT DEFAULT 0, 
+    incorrect_answers INT DEFAULT 0, 
+    completion_percentage INT DEFAULT 0 
 );
 
 CREATE TABLE FlashcardStatsSimple (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Users(id),
     flashcard_id INT REFERENCES Flashcards(id),
-    view_count INT DEFAULT 0,
+    view_count INT DEFAULT 0
 );
 
 CREATE TABLE FlashcardStatsStages (
@@ -70,7 +78,7 @@ CREATE TABLE FlashcardStatsStages (
     flashcard_id INT REFERENCES Flashcards(id),
     view_count INT DEFAULT 0,
     stage INT DEFAULT 1,
-    learned BOOLEAN DEFAULT 0
+    learned BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE FlashcardStatsPercent (
@@ -78,5 +86,5 @@ CREATE TABLE FlashcardStatsPercent (
     user_id INT REFERENCES Users(id),
     flashcard_id INT REFERENCES Flashcards(id),
     view_count INT DEFAULT 0,
-    learning_stage VARCHAR(20) CHECK (learning_stage IN ('not_learned', 'still_learning', 'almost_learned', 'learned')) DEFAULT 'not_learned' 
+    learning_stage VARCHAR(20) CHECK (learning_stage IN ('not_learned', 'learning', 'almost_learned', 'learned')) DEFAULT 'not_learned' 
 );
