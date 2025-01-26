@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import timedelta
 
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
@@ -35,6 +35,21 @@ class FlashcardSet(models.Model):
     def __str__(self):
         return self.name
 
+class FlashcardSetStats(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='flashcard_set_stats_user'
+    )
+    set = models.ForeignKey(
+        FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_stats_set'
+    )
+    flashcards_viewed = models.IntegerField(default=0)
+    total_study_time = models.DurationField(default=timedelta(seconds=0))
+
+    class Meta:
+        db_table = 'flashcardsetstats'
+
+    def __str__(self):
+        return (f"{self.id} - set: {self.set} - user: {self.user}")
 
 class Flashcard(models.Model):
     set = models.ForeignKey(
