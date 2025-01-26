@@ -31,23 +31,6 @@ class FlashcardSet(models.Model):
     def __str__(self):
         return self.name
 
-class FlashcardSetStats(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='flashcard_set_stats_user'
-    )
-    set = models.ForeignKey(
-        FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_stats_set'
-    )
-    flashcards_viewed = models.IntegerField(default=0)
-    total_study_time = models.DurationField(default=timedelta(seconds=0))
-
-    class Meta:
-        db_table = 'flashcardsetstats'
-
-    def __str__(self):
-        return (f"{self.id} - set: {self.set.id} - user: {self.user.id}")
-
-
 
 class Flashcard(models.Model):
     set = models.ForeignKey(
@@ -114,16 +97,59 @@ class FlashcardFavorite(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.question[:50]}"
 
+class FlashcardSetStats(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='flashcard_set_stats_user'
+    )
+    set = models.ForeignKey(
+        FlashcardSet, on_delete=models.CASCADE, related_name='flashcard_set_stats_set'
+    )
+    flashcards_viewed = models.IntegerField(default=0)
+    total_study_time = models.DurationField(default=timedelta(seconds=0))
+
+    class Meta:
+        db_table = 'flashcardsetstats'
+
+    def __str__(self):
+        return (f"{self.id} - set: {self.set.id} - user: {self.user.id}")
+
+class FlashcardStatsSimple(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcardstatssimple')
+    flashcard = models.ForeignKey(Flashcard, on_delete=models.CASCADE, related_name='flashcardstatssimple')
+    view_count = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'flashcardstatssimple'
+        unique_together = ('id', 'flashcard')  # Prevent duplicate stats for the same stats and flashcard
+
+    def __str__(self):
+        return f"{self.user.username} - {self.flashcard.id} (Views: {self.view_count})"
+
+
+class FlashcardStatsStages(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcardstatsstages')
+    flashcard = models.ForeignKey('Flashcard', on_delete=models.CASCADE, related_name='flashcardstatsstages')
+    view_count = models.IntegerField(default=0)
+    stage = models.IntegerField(default=1)
+    learned = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'flashcardstatsstages'
+        unique_together = ('user', 'flashcard')  # Zapobiega duplikatom dla użytkownika i fiszki
+
+    def __str__(self):
+        return f"{self.user.username} - {self.flashcard.id} (Stage: {self.stage}, Learned: {self.learned})"
+
 
 class FlashcardStatsPercent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcardstatspercent')
-    flashcard = models.ForeignKey(Flashcard, on_delete=models.CASCADE, related_name='flashcardstatspercent')
+    flashcard = models.ForeignKey('Flashcard', on_delete=models.CASCADE, related_name='flashcardstatspercent')
     view_count = models.IntegerField(default=0)
     learning_stage = models.CharField(
         max_length=20,
         choices=[
             ('not_learned', 'Not Learned'),
-            ('learning', 'Learning'),
+            ('still_learning', 'Still Learning'),
             ('almost_learned', 'Almost Learned'),
             ('learned', 'Learned')
         ],
@@ -132,8 +158,7 @@ class FlashcardStatsPercent(models.Model):
 
     class Meta:
         db_table = 'flashcardstatspercent'
-        unique_together = ('id', 'flashcard')  # Prevent duplicate stats for the same stats and flashcard
+        unique_together = ('user', 'flashcard')  # Zapobiega duplikatom dla użytkownika i fiszki
 
     def __str__(self):
-        return f"{self.user.username} - {self.flashcard.question[:50]}"
-
+        return f"{self.user.username} - {self.flashcard.id} (Stage: {self.learning_stage})"
