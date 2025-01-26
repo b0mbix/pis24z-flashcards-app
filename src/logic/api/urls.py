@@ -37,8 +37,8 @@ urlpatterns = [
     path('flashcard-set-stats/add', views.create_flashcard_set_stats, name='create_flashcard_set_stats'),
     path('flashcard-set-stats/<int:user_id>/update', views.update_flashcard_set_stats, name='update_flashcard_set_stats'),
 
-    path('flashcard-stats/add', views.create_flashcard_stats, name='create_flashcard_stats'),
-    path('flashcard-stats/<int:user_id>/update', views.update_flashcard_stats, name='update_flashcard_stats'),
+    path('flashcard-stats-percent/add', views.create_flashcard_stats_percent, name='create_flashcard_stats_percent'),
+    path('flashcard-stats-percent/<int:user_id>/update', views.update_flashcard_stats_percent, name='update_flashcard_stats_percent'),
 
     path('flashcard-set-stats/reset/', views.reset_flashcard_set_stats, name='reset_flashcard_set_stats'),
 

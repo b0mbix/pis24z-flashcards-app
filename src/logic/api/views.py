@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStats
+from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsPercent
 
 
 # User
@@ -377,23 +377,19 @@ def update_flashcard_set_stats(request):
         return Response({"error": "Flashcard set stats not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# FlashcardStats
+# FlashcardStatsPercent
 
 @api_view(['POST'])
-def create_flashcard_stats(request):
+def create_flashcard_stats_percent(request):
     try:
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
         
-        flashcard_stats = FlashcardStats.objects.create(
+        flashcard_stats = FlashcardStatsPercent.objects.create(
             user=user,
             flashcard=flashcard,
             view_count=data.get('view_count', 0),
-            correct_answers=data.get('correct_answers', 0),
-            incorrect_answers=data.get('incorrect_answers', 0),
-            total_study_time=data.get('total_study_time', '0:00:00'),
-            last_answered_at=data.get('last_answered_at', None),
             learning_stage=data.get('learning_stage', 'not_learned')
         )
         return Response({"message": "Flashcard stats created successfully", "stats_id": flashcard_stats.id}, status=status.HTTP_201_CREATED)
@@ -403,18 +399,14 @@ def create_flashcard_stats(request):
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT'])
-def update_flashcard_stats(request):
+def update_flashcard_stats_percent(request):
     try:
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
         
-        flashcard_stats = FlashcardStats.objects.get(user=user, flashcard=flashcard)
+        flashcard_stats = FlashcardStatsPercent.objects.get(user=user, flashcard=flashcard)
         flashcard_stats.view_count = data.get('view_count', flashcard_stats.view_count)
-        flashcard_stats.correct_answers = data.get('correct_answers', flashcard_stats.correct_answers)
-        flashcard_stats.incorrect_answers = data.get('incorrect_answers', flashcard_stats.incorrect_answers)
-        flashcard_stats.total_study_time = data.get('total_study_time', flashcard_stats.total_study_time)
-        flashcard_stats.last_answered_at = data.get('last_answered_at', flashcard_stats.last_answered_at)
         flashcard_stats.learning_stage = data.get('learning_stage', flashcard_stats.learning_stage)
         flashcard_stats.save()
         
@@ -423,7 +415,7 @@ def update_flashcard_stats(request):
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardStats.DoesNotExist:
+    except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "Flashcard stats not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -446,7 +438,7 @@ def reset_flashcard_set_stats(request):
 
         flashcards = Flashcard.objects.filter(set=flashcard_set)
         for flashcard in flashcards:
-            flashcard_stats = FlashcardStats.objects.get(user=user, flashcard=flashcard)
+            flashcard_stats = FlashcardStatsPercent.objects.get(user=user, flashcard=flashcard)
             flashcard_stats.view_count = 0
             flashcard_stats.correct_answers = 0
             flashcard_stats.incorrect_answers = 0
@@ -462,5 +454,5 @@ def reset_flashcard_set_stats(request):
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
     except FlashcardSetStats.DoesNotExist:
         return Response({"error": "Flashcard set stats not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardStats.DoesNotExist:
+    except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "Some flashcard stats not found"}, status=status.HTTP_404_NOT_FOUND)

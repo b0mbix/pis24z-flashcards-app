@@ -130,14 +130,10 @@ class FlashcardSetStats(models.Model):
         return f"{self.user.username} - {self.set.name}"
 
 
-class FlashcardStats(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcard_stats')
-    flashcard = models.ForeignKey(Flashcard, on_delete=models.CASCADE, related_name='stats')
+class FlashcardStatsPercent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcardstatspercent')
+    flashcard = models.ForeignKey(Flashcard, on_delete=models.CASCADE, related_name='flashcardstatspercent')
     view_count = models.IntegerField(default=0)
-    correct_answers = models.IntegerField(default=0)
-    incorrect_answers = models.IntegerField(default=0)
-    total_study_time = models.DurationField(default='0:00:00')
-    last_answered_at = models.DateTimeField(null=True, blank=True)
     learning_stage = models.CharField(
         max_length=20,
         choices=[
@@ -150,7 +146,7 @@ class FlashcardStats(models.Model):
     )
 
     class Meta:
-        db_table = 'flashcardstats'
+        db_table = 'flashcardstatspercent'
         unique_together = ('user', 'flashcard')  # Prevent duplicate stats for the same user and flashcard
 
     def __str__(self):
