@@ -45,7 +45,9 @@ class FlashcardSetStats(models.Model):
         db_table = 'flashcardsetstats'
 
     def __str__(self):
-        return (f"{self.id} - set: {self.set} - user: {self.user}")
+        return (f"{self.id} - set: {self.set.id} - user: {self.user.id}")
+
+
 
 class Flashcard(models.Model):
     set = models.ForeignKey(
@@ -111,23 +113,6 @@ class FlashcardFavorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.question[:50]}"
-
-
-class FlashcardSetStats(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcard_set_stats')
-    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='stats')
-    flashcards_viewed = models.IntegerField(default=0)
-    total_study_time = models.DurationField(default='0:00:00')
-    correct_answers = models.IntegerField(default=0)
-    incorrect_answers = models.IntegerField(default=0)
-    completion_percentage = models.IntegerField(default=0)
-
-    class Meta:
-        db_table = 'flashcardsetstats'
-        unique_together = ('user', 'set')  # Prevent duplicate stats for the same user and set
-
-    def __str__(self):
-        return f"{self.user.username} - {self.set.name}"
 
 
 class FlashcardStatsPercent(models.Model):
