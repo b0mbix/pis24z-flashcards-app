@@ -67,14 +67,6 @@ services:
     depends_on:
       - postgres-blue  # Zmieniono na postgres-blue
 
-  migrate-blue:
-    build:
-      context: ./src/logic
-      dockerfile: Dockerfile
-    command: sh -c "python manage.py makemigrations && python manage.py migrate"
-    depends_on:
-      - postgres-blue  # Zmieniono na postgres-blue
-
   nexus-blue:
     build:
       context: .
