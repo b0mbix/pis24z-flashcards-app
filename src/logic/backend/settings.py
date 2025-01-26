@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'rest_framework',
+    'drf_yasg',
 ]
 
 # Middleware (pośrednicy)
