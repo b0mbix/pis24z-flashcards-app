@@ -8,7 +8,14 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsPercent
+from enum import Enum
 
+LEARNING_STAGES = [
+    'not_learned', 
+    'learning', 
+    'almost_learned', 
+    'learned'
+]
 
 # User
 
@@ -379,6 +386,21 @@ def update_flashcard_set_stats(request):
 
 # FlashcardStatsPercent
 
+@api_view(['GET'])
+def get_flashcards_stats_percent(request):
+    flashcards = FlashcardStatsPercent.objects.all()
+    response = []
+    for flashcard in flashcards:
+        response.append({
+            "id": flashcard.id,
+            "user_id": flashcard.user.id,
+            "flashcard_id": flashcard.flashcard.id,
+            "view_count": flashcard.view_count,
+            "learning_stage": flashcard.learning_stage,
+        })
+    return Response(response, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 def create_flashcard_stats_percent(request):
     try:
@@ -398,25 +420,38 @@ def create_flashcard_stats_percent(request):
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_stats_percent(request):
     try:
         data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
+        to_level_up = data.get("level_up", [])
+        to_level_down = data.get("level_down", [])
+
+        for flashcard_id in to_level_up:
+            flashcard = FlashcardStatsPercent.objects.get(id=flashcard_id)
+            current_index = LEARNING_STAGES.index(flashcard.learning_stage)  
+            if current_index < len(LEARNING_STAGES) - 1: 
+                flashcard.learning_stage = LEARNING_STAGES[current_index + 1]
+            flashcard.view_count += 1
+            flashcard.save()
         
-        flashcard_stats = FlashcardStatsPercent.objects.get(user=user, flashcard=flashcard)
-        flashcard_stats.view_count = data.get('view_count', flashcard_stats.view_count)
-        flashcard_stats.learning_stage = data.get('learning_stage', flashcard_stats.learning_stage)
-        flashcard_stats.save()
-        
+
+        for flashcard_id in to_level_down:
+            flashcard = FlashcardStatsPercent.objects.get(id=flashcard_id)
+            current_index = LEARNING_STAGES.index(flashcard.learning_stage)  
+            if current_index > 0: 
+                flashcard.learning_stage = LEARNING_STAGES[current_index - 1]
+            flashcard.view_count += 1
+            flashcard.save()
+
         return Response({"message": "Flashcard stats updated successfully"}, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except Flashcard.DoesNotExist:
-        return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
+
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "Flashcard stats not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # Reset Statystyk uczenia fiszek

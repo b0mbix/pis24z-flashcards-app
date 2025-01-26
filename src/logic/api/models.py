@@ -147,7 +147,7 @@ class FlashcardStatsPercent(models.Model):
 
     class Meta:
         db_table = 'flashcardstatspercent'
-        unique_together = ('user', 'flashcard')  # Prevent duplicate stats for the same user and flashcard
+        unique_together = ('id', 'flashcard')  # Prevent duplicate stats for the same stats and flashcard
 
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.question[:50]}"
