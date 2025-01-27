@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from logic.api.models import FlashcardSet
+from .models import FlashcardSet
 from rest_framework import serializers
 
 
