@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from logic.api.models import FlashcardSet
 from rest_framework import serializers
 
 
@@ -38,3 +39,18 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid password')
 
         return user
+
+
+class FlashcardSetSerializer(serializers.ModelSerializer):
+    learning_progress = serializers.SerializerMethodField()
+    owner_id = serializers.IntegerField(source='user.id', read_only=True)
+
+    class Meta:
+        model = FlashcardSet
+        fields = ['id', 'name', 'description', 'flashcards_count', 'learning_progress', 'owner_id']
+
+    def get_learning_progress(self, obj):
+        user = self.context.get('user')
+        if user:
+            return obj.calculate_learning_progress(user)
+        return 0.0

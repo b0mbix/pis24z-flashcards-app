@@ -1,3 +1,4 @@
+from django.db.models import Avg, Case, When, FloatField
 from django.contrib.auth.models import User
 from django.db import models
 from datetime import timedelta
@@ -20,6 +21,21 @@ class FlashcardSet(models.Model):
 
     def __str__(self):
         return self.name
+
+    def calculate_learning_progress(self, user):
+        progress = self.flashcards.filter(flashcardstatspercent__user_id=user.id).aggregate(
+            avg_progress=Avg(
+                Case(
+                    When(flashcardstatspercent__learning_stage='not_learned', then=0),
+                    When(flashcardstatspercent__learning_stage='still_learning', then=0.25),
+                    When(flashcardstatspercent__learning_stage='almost_learned', then=0.75),
+                    When(flashcardstatspercent__learning_stage='learned', then=1),
+                    default=0,
+                    output_field=FloatField(),
+                )
+            )
+        )['avg_progress']
+        return progress or 0.0
 
 
 class Flashcard(models.Model):
