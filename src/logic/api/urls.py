@@ -58,5 +58,14 @@ urlpatterns = [
     path('flashcard-stats-percent/add/', views.add_flashcard_stats_percent, name='add_flashcard_stats_percent'),
     path('flashcard-stats-percent/<int:stats_id>/get/', views.get_flashcard_stats_percent, name='get_flashcard_stats_percent'),
     path('flashcard-stats-percent/<int:stats_id>/update/', views.update_flashcard_stats_percent, name='update_flashcard_stats_percent'),
-    path('flashcard-stats-percent/<int:stats_id>/delete/', views.delete_flashcard_stats_percent, name='delete_flashcard_stats_percent')
+    path('flashcard-stats-percent/<int:stats_id>/delete/', views.delete_flashcard_stats_percent, name='delete_flashcard_stats_percent'),
+
+    # custom endpoints
+    path('flashcard-sets/public/', views.get_public_flashcard_sets, name='get_public_flashcard_sets'),
+    path('flashcard-sets/user/all/', views.get_flashcard_sets_by_user, name='get_flashcard_sets_by_user'),
+    path(
+        'flashcard-sets/user/favorites/',
+        views.get_flashcard_sets_favorites_by_user,
+        name='get_flashcard_sets_favorites_by_user'
+    ),
 ]
