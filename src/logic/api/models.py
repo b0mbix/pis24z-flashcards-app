@@ -1,16 +1,6 @@
+from django.contrib.auth.models import User
 from django.db import models
 from datetime import timedelta
-
-class User(models.Model):
-    username = models.CharField(max_length=50, unique=True)
-    password_hash = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'users'
-
-    def __str__(self):
-        return self.username
 
 
 class FlashcardSet(models.Model):
@@ -97,6 +87,7 @@ class FlashcardFavorite(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.question[:50]}"
 
+
 class FlashcardSetStats(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='flashcard_set_stats_user'
@@ -112,6 +103,7 @@ class FlashcardSetStats(models.Model):
 
     def __str__(self):
         return (f"{self.id} - set: {self.set.id} - user: {self.user.id}")
+
 
 class FlashcardStatsSimple(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcardstatssimple')

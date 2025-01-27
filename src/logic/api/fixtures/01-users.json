@@ -1,0 +1,39 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "username": "jan_kowalski",
+            "password": "$2b$12$9xN1p",
+            "date_joined": "2024-01-01T10:00:00Z"
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 2,
+        "fields": {
+            "username": "anna_nowak",
+            "password": "$2b$12$4h",
+            "date_joined": "2024-01-15T12:00:00Z"
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 3,
+        "fields": {
+            "username": "piotr_wisniewski",
+            "password": "$2b$12$oz7NNl8/",
+            "date_joined": "2024-02-01T08:30:00Z"
+        }
+    },
+    {
+        "model": "auth.User",
+        "pk": 4,
+        "fields": {
+            "username": "magdalena_krawczyk",
+            "password": "$2b$12$d5x",
+            "date_joined": "2024-03-01T09:00:00Z"
+        }
+    }
+]
+

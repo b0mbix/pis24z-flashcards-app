@@ -1,0 +1,43 @@
+[
+    {
+      "model": "api.FlashcardStatsPercent",
+      "pk": 1,
+      "fields": {
+        "user_id": 1,
+        "flashcard_id": 1,
+        "view_count": 5,
+        "learning_stage": "still_learning"
+      }
+    },
+    {
+      "model": "api.FlashcardStatsPercent",
+      "pk": 2,
+      "fields": {
+        "user_id": 2,
+        "flashcard_id": 2,
+        "view_count": 3,
+        "learning_stage": "almost_learned"
+      }
+    },
+    {
+      "model": "api.FlashcardStatsPercent",
+      "pk": 3,
+      "fields": {
+        "user_id": 3,
+        "flashcard_id": 3,
+        "view_count": 4,
+        "learning_stage": "learned"
+      }
+    },
+    {
+      "model": "api.FlashcardStatsPercent",
+      "pk": 4,
+      "fields": {
+        "user_id": 4,
+        "flashcard_id": 4,
+        "view_count": 2,
+        "learning_stage": "not_learned"
+      }
+    }
+  ]
+  

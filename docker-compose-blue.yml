@@ -1,8 +1,6 @@
 services:
   postgres-blue:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
+    image: postgres:15
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -59,11 +57,31 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
       DJANGO_ENVIRONMENT: "blue"  # Ustawienie środowiska "blue"
+      DB_HOST: postgres
+      DB_PORT: 5559
+      DB_NAME: flashcards_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
     ports:
       - "5555:8000"
     volumes:
       - logic_data:/app
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres-blue  # Zmieniono na postgres-blue
+
+  migrate-blue:
+    build:
+      context: ./src/logic
+      dockerfile: Dockerfile
+    environment:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      DB_HOST: postgres
+      DB_PORT: 5559
+      DB_NAME: flashcards_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    command: sh -c "python manage.py makemigrations && python manage.py migrate"
     depends_on:
       - postgres-blue  # Zmieniono na postgres-blue
 

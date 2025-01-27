@@ -1,8 +1,6 @@
 services:
   postgres:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
+    image: postgres:15
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -59,11 +57,31 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: backend.settings
       DJANGO_ENVIRONMENT: "green"  # Ustawienie środowiska "green"
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: flashcards_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
     ports:
       - "8000:8000"
     volumes:
       - logic_data:/app
     command: sh -c "sleep 5 && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - postgres
+
+  migrate:
+    build:
+      context: ./src/logic
+      dockerfile: Dockerfile
+    environment:
+      DJANGO_SETTINGS_MODULE: backend.settings
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: flashcards_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    command: sh -c "python manage.py makemigrations && python manage.py migrate"
     depends_on:
       - postgres
 
@@ -84,4 +102,4 @@ volumes:
   es_data:
   minio_data:
   flutter_data:
-  logic_data:
+  # logic_data:

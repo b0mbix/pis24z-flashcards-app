@@ -1,0 +1,51 @@
+[
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 1,
+      "fields": {
+        "set_id": 1,
+        "tag_id": 1
+      }
+    },
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 2,
+      "fields": {
+        "set_id": 1,
+        "tag_id": 5
+      }
+    },
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 3,
+      "fields": {
+        "set_id": 2,
+        "tag_id": 2
+      }
+    },
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 4,
+      "fields": {
+        "set_id": 3,
+        "tag_id": 3
+      }
+    },
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 5,
+      "fields": {
+        "set_id": 3,
+        "tag_id": 6
+      }
+    },
+    {
+      "model": "api.FlashcardSetTag",
+      "pk": 6,
+      "fields": {
+        "set_id": 4,
+        "tag_id": 4
+      }
+    }
+  ]
+  

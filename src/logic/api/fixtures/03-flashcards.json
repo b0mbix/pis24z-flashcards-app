@@ -1,0 +1,311 @@
+[
+  {
+      "model": "api.Flashcard",
+      "pk": 1,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'dzień dobry' po hiszpańsku?",
+          "answer": "Buenos días",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 2,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'do widzenia' po hiszpańsku?",
+          "answer": "Adiós",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 3,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'proszę' po hiszpańsku?",
+          "answer": "Por favor",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 4,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'dziękuję' po hiszpańsku?",
+          "answer": "Gracias",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 5,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'tak' po hiszpańsku?",
+          "answer": "Sí",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 6,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'nie' po hiszpańsku?",
+          "answer": "No",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 7,
+      "fields": {
+          "set_id": 1,
+          "question": "Jak powiedzieć 'jabłko' po hiszpańsku?",
+          "answer": "Manzana",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 8,
+      "fields": {
+          "set_id": 2,
+          "question": "Kto był królem Sparty podczas bitwy pod Termopilami?",
+          "answer": "Leonidas",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 9,
+      "fields": {
+          "set_id": 2,
+          "question": "W którym roku wybuchła wojna peloponeska?",
+          "answer": "431 p.n.e.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 10,
+      "fields": {
+          "set_id": 2,
+          "question": "Jak nazywał się słynny filozof grecki, który był uczniem Sokratesa?",
+          "answer": "Platon",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 11,
+      "fields": {
+          "set_id": 2,
+          "question": "Jakie miasto-państwo zdominowało Grecję po wojnie peloponeskiej?",
+          "answer": "Sparta",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 12,
+      "fields": {
+          "set_id": 2,
+          "question": "Jak nazywano grecką kolonię w Egipcie założoną przez Aleksandra Wielkiego?",
+          "answer": "Aleksandria",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 13,
+      "fields": {
+          "set_id": 2,
+          "question": "Co oznacza pojęcie 'Agora' w starożytnej Grecji?",
+          "answer": "Rynek publiczny",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 14,
+      "fields": {
+          "set_id": 2,
+          "question": "Kto napisał 'Iliadę' i 'Odyseję'?",
+          "answer": "Homer",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 15,
+      "fields": {
+          "set_id": 3,
+          "question": "Jak brzmi wzór na pole koła?",
+          "answer": "πr²",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 16,
+      "fields": {
+          "set_id": 3,
+          "question": "Jak brzmi wzór na objętość kuli?",
+          "answer": "4/3 πr³",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 17,
+      "fields": {
+          "set_id": 3,
+          "question": "Co to jest macierz transponowana?",
+          "answer": "Macierz otrzymana przez zamianę wierszy na kolumny.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 18,
+      "fields": {
+          "set_id": 3,
+          "question": "Jakie jest równanie prostej w postaci kierunkowej?",
+          "answer": "y = mx + b",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 19,
+      "fields": {
+          "set_id": 3,
+          "question": "Jak nazywa się liczba niewymierna zaczynająca się od 3.14?",
+          "answer": "Liczba π",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 20,
+      "fields": {
+          "set_id": 3,
+          "question": "Jak brzmi twierdzenie Pitagorasa?",
+          "answer": "a² + b² = c² dla trójkąta prostokątnego",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 21,
+      "fields": {
+          "set_id": 3,
+          "question": "Czym jest logarytm naturalny?",
+          "answer": "Logarytm o podstawie e.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 22,
+      "fields": {
+          "set_id": 4,
+          "question": "Czym jest zmienna w programowaniu?",
+          "answer": "Miejsce w pamięci przeznaczone na przechowywanie danych.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 23,
+      "fields": {
+          "set_id": 4,
+          "question": "Co oznacza instrukcja 'if'?",
+          "answer": "Wykonuje kod, jeśli warunek jest prawdziwy.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+      "model": "api.Flashcard",
+      "pk": 24,
+      "fields": {
+          "set_id": 4,
+          "question": "Czym jest pętla 'for'?",
+          "answer": "Pętla umożliwiająca iterację przez elementy.",
+          "created_at": "2025-01-27T12:00:00Z",
+          "updated_at": "2025-01-27T12:00:00Z"
+      }
+  },
+  {
+    "model": "api.Flashcard",
+    "pk": 25,
+    "fields": {
+      "set_id": 4,
+      "question": "Czym jest funkcja w programowaniu?",
+      "answer": "Blok kodu wykonujący określone zadanie, który można wywołać.",
+      "created_at": "2025-01-27T12:00:00Z",
+      "updated_at": "2025-01-27T12:00:00Z"
+    }
+  },
+  {
+    "model": "api.Flashcard",
+    "pk": 26,
+    "fields": {
+      "set_id": 4,
+      "question": "Jak nazywa się operator przypisania w większości języków programowania?",
+      "answer": "Operator =",
+      "created_at": "2025-01-27T12:00:00Z",
+      "updated_at": "2025-01-27T12:00:00Z"
+    }
+  },
+  {
+    "model": "api.Flashcard",
+    "pk": 27,
+    "fields": {
+      "set_id": 4,
+      "question": "Co oznacza termin 'kompilacja'?",
+      "answer": "Proces tłumaczenia kodu źródłowego na kod maszynowy.",
+      "created_at": "2025-01-27T12:00:00Z",
+      "updated_at": "2025-01-27T12:00:00Z"
+    }
+  },
+  {
+    "model": "api.Flashcard",
+    "pk": 28,
+    "fields": {
+      "set_id": 4,
+      "question": "Czym jest zmienna globalna?",
+      "answer": "Zmienne dostępne w całym programie.",
+      "created_at": "2025-01-27T12:00:00Z",
+      "updated_at": "2025-01-27T12:00:00Z"
+    }
+  }
+]
+  
