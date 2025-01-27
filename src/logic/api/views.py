@@ -1,6 +1,6 @@
 # from django.http import JsonResponse
 # from rest_framework.views import APIView
-from logic.api.serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -20,7 +20,6 @@ def register(request):
         return Response(
             {
                 "message": "User created successfully",
-                "user_id": serializer.data.get('id'),
                 "refresh": str(refresh),
                 "access": str(refresh.access_token)
             },
