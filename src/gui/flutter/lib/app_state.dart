@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/backend/api_requests/api_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 
@@ -83,5 +84,11 @@ class FFAppState extends ChangeNotifier {
 
   void insertAtIndexInSetNames(int index, String value) {
     SetNames.insert(index, value);
+  }
+
+  String _authToken = '';
+  String get authToken => _authToken;
+  set authToken(String value) {
+    _authToken = value;
   }
 }

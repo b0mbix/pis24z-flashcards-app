@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -438,8 +439,31 @@ class _CreateAccountWidgetState extends State<CreateAccountWidget> {
                       padding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 24.0),
                       child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
+                        onPressed: () async {
+                          _model.apiResult73b = await CreateUserCall.call();
+
+                          if ((_model.apiResult73b?.succeeded ?? true)) {
+                            context.pushNamed('MainPage');
+                          } else {
+                            await showDialog(
+                              context: context,
+                              builder: (alertDialogContext) {
+                                return AlertDialog(
+                                  title: Text('Tiruriru'),
+                                  content: Text('Something Went wrong'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(alertDialogContext),
+                                      child: Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+
+                          safeSetState(() {});
                         },
                         text: 'Create Account',
                         options: FFButtonOptions(
