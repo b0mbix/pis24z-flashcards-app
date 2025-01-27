@@ -60,7 +60,7 @@ def add_user(request):
         data = request.data
         user = User.objects.create(
             username=data.get('username'),
-            password_hash=data.get('password_hash'),
+            password=data.get('password'),
         )
         return Response({"message": "User created successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
     except Exception as e:
@@ -82,7 +82,7 @@ def update_user(request, user_id):
         user = User.objects.get(id=user_id)
         data = request.data
         user.username = data.get('username', user.username)
-        user.password_hash = data.get('password_hash', user.password_hash)
+        user.password = data.get('password', user.password)
         user.save()
         return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
