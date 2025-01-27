@@ -148,4 +148,6 @@ STATIC_URL = 'static/'
 # Typ pola identyfikatora dla nowych obiektów w bazie danych
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Dodatkowe ustawienia związane z Elasticsearch, Minio, itp. można dodać w podobny sposób
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, "api/fixtures/")
+]
