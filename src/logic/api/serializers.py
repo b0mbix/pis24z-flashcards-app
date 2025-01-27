@@ -14,6 +14,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
 
     def create(self, validated_data):
+        username = validated_data.get('username')
+        if AuthUser.objects.filter(username=username).exists():
+            raise serializers.ValidationError({'username': 'This username is already taken.'})
+
         password = validated_data.pop('password')
 
         auth_user = AuthUser.objects.create_user(
@@ -37,7 +41,7 @@ class LoginSerializer(serializers.Serializer):
 
         try:
             user = AuthUser.objects.get(username=username)
-        except User.DoesNotExist:
+        except AuthUser.DoesNotExist:
             raise serializers.ValidationError('Invalid username')
 
         if not check_password(password, user.password):
