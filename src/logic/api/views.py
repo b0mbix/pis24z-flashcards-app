@@ -32,6 +32,7 @@ def register(request):
         return Response(
             {
                 "message": "User created successfully",
+                "user_id": serializer.instance.id,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token)
             },
