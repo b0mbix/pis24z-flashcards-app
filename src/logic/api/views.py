@@ -8,7 +8,19 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from datetime import datetime, timedelta
-from .models import User, FlashcardSet, Flashcard, Tag, FlashcardSetTag, FlashcardSetFavorite, FlashcardFavorite, FlashcardSetStats, FlashcardStatsSimple, FlashcardStatsStages, FlashcardStatsPercent
+from .models import (
+    User,
+    FlashcardSet,
+    Flashcard,
+    Tag,
+    FlashcardSetTag,
+    FlashcardSetFavorite,
+    FlashcardFavorite,
+    FlashcardSetStats,
+    FlashcardStatsSimple,
+    FlashcardStatsStages,
+    FlashcardStatsPercent
+)
 
 
 @api_view(['POST'])
@@ -66,6 +78,7 @@ def add_user(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_user(request, user_id):
     try:
@@ -75,6 +88,7 @@ def get_user(request, user_id):
         }, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['PUT'])
 def update_user(request, user_id):
@@ -87,6 +101,7 @@ def update_user(request, user_id):
         return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['DELETE'])
 def delete_user(request, user_id):
@@ -114,6 +129,7 @@ def add_flashcard_set(request):
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_flashcard_sets(request):
     flashcard_sets = FlashcardSet.objects.all()
@@ -126,6 +142,7 @@ def get_flashcard_sets(request):
             "user_id": flashcard_set.user.id,
         })
     return Response(response, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def get_flashcard_set(request, set_id):
@@ -144,6 +161,7 @@ def get_flashcard_set(request, set_id):
     except FlashcardSet.DoesNotExist:
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_set(request, set_id):
     try:
@@ -158,6 +176,7 @@ def update_flashcard_set(request, set_id):
     except FlashcardSet.DoesNotExist:
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['DELETE'])
 def delete_flashcard_set(request, set_id):
     try:
@@ -168,7 +187,7 @@ def delete_flashcard_set(request, set_id):
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# Flashcard 
+# Flashcard
 
 @api_view(['POST'])
 def add_flashcard(request):
@@ -184,6 +203,7 @@ def add_flashcard(request):
     except FlashcardSet.DoesNotExist:
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['DELETE'])
 def delete_flashcard(request, flashcard_id):
     try:
@@ -196,10 +216,11 @@ def delete_flashcard(request, flashcard_id):
             flashcard_set.save()
         except FlashcardSet.DoesNotExist:
             return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         return Response({"message": "Flashcard deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 def get_flashcard(request, flashcard_id):
@@ -212,6 +233,7 @@ def get_flashcard(request, flashcard_id):
         }, status=status.HTTP_200_OK)
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['PUT'])
 def update_flashcard(request, flashcard_id):
@@ -226,9 +248,8 @@ def update_flashcard(request, flashcard_id):
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+# Tag
 
-
-# Tag 
 
 @api_view(['POST'])
 def add_tag(request):
@@ -239,6 +260,7 @@ def add_tag(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_tag(request, tag_id):
     try:
@@ -246,6 +268,7 @@ def get_tag(request, tag_id):
         return Response({"name": tag.name}, status=status.HTTP_200_OK)
     except Tag.DoesNotExist:
         return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['PUT'])
 def update_tag(request, tag_id):
@@ -257,6 +280,7 @@ def update_tag(request, tag_id):
         return Response({"message": "Tag updated successfully"}, status=status.HTTP_200_OK)
     except Tag.DoesNotExist:
         return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['DELETE'])
 def delete_tag(request, tag_id):
@@ -283,6 +307,7 @@ def add_flashcard_set_tag(request):
     except Tag.DoesNotExist:
         return Response({"error": "Tag not found"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['DELETE'])
 def delete_flashcard_set_tag(request, set_id, tag_id):
     try:
@@ -301,9 +326,9 @@ def add_flashcard_set_to_favorites(request):
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        
+
         flashcard_set_favorite, created = FlashcardSetFavorite.objects.get_or_create(user=user, set=flashcard_set)
-        
+
         if created:
             return Response({"message": "Flashcard set added to favorites"}, status=status.HTTP_201_CREATED)
         else:
@@ -313,16 +338,17 @@ def add_flashcard_set_to_favorites(request):
     except FlashcardSet.DoesNotExist:
         return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['DELETE'])
 def remove_flashcard_set_from_favorites(request):
     try:
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        
+
         flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
         flashcard_set_favorite.delete()
-        
+
         return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -332,7 +358,7 @@ def remove_flashcard_set_from_favorites(request):
         return Response({"error": "Flashcard set not found in favorites"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# FlascardFavorite
+# FlashcardFavorite
 
 @api_view(['POST'])
 def add_flashcard_to_favorites(request):
@@ -340,9 +366,9 @@ def add_flashcard_to_favorites(request):
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
-        
+
         flashcard_favorite, created = FlashcardFavorite.objects.get_or_create(user=user, flashcard=flashcard)
-        
+
         if created:
             return Response({"message": "Flashcard added to favorites"}, status=status.HTTP_201_CREATED)
         else:
@@ -352,16 +378,17 @@ def add_flashcard_to_favorites(request):
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['DELETE'])
 def remove_flashcard_from_favorites(request):
     try:
         data = request.data
         user = User.objects.get(id=data.get('user_id'))
         flashcard = Flashcard.objects.get(id=data.get('flashcard_id'))
-        
+
         flashcard_favorite = FlashcardFavorite.objects.get(user=user, flashcard=flashcard)
         flashcard_favorite.delete()
-        
+
         return Response({"message": "Flashcard removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -387,6 +414,7 @@ def add_flashcard_set_stats(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_flashcard_set_stats(request, stats_id):
     try:
@@ -400,6 +428,7 @@ def get_flashcard_set_stats(request, stats_id):
     except FlashcardSetStats.DoesNotExist:
         return Response({"error": "FlashcardSetStats not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_set_stats(request, stats_id):
     try:
@@ -411,6 +440,7 @@ def update_flashcard_set_stats(request, stats_id):
         return Response({"message": "FlashcardSetStats updated successfully"}, status=status.HTTP_200_OK)
     except FlashcardSetStats.DoesNotExist:
         return Response({"error": "FlashcardSetStats not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['DELETE'])
 def delete_flashcard_set_stats(request, stats_id):
@@ -437,6 +467,7 @@ def add_flashcard_stats_simple(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_flashcard_stats_simple(request, stats_id):
     try:
@@ -449,6 +480,7 @@ def get_flashcard_stats_simple(request, stats_id):
     except FlashcardStatsSimple.DoesNotExist:
         return Response({"error": "FlashcardStatsSimple not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_stats_simple(request, stats_id):
     try:
@@ -459,6 +491,7 @@ def update_flashcard_stats_simple(request, stats_id):
         return Response({"message": "FlashcardStatsSimple updated successfully"}, status=status.HTTP_200_OK)
     except FlashcardStatsSimple.DoesNotExist:
         return Response({"error": "FlashcardStatsSimple not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['DELETE'])
 def delete_flashcard_stats_simple(request, stats_id):
@@ -487,6 +520,7 @@ def add_flashcard_stats_stages(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_flashcard_stats_stages(request, stats_id):
     try:
@@ -501,6 +535,7 @@ def get_flashcard_stats_stages(request, stats_id):
     except FlashcardStatsStages.DoesNotExist:
         return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_stats_stages(request, stats_id):
     try:
@@ -514,6 +549,7 @@ def update_flashcard_stats_stages(request, stats_id):
     except FlashcardStatsStages.DoesNotExist:
         return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['DELETE'])
 def delete_flashcard_stats_stages(request, stats_id):
     try:
@@ -524,7 +560,7 @@ def delete_flashcard_stats_stages(request, stats_id):
         return Response({"error": "FlashcardStatsStages not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# FlashcardStatsPercent 
+# FlashcardStatsPercent
 
 @api_view(['POST'])
 def add_flashcard_stats_percent(request):
@@ -540,6 +576,7 @@ def add_flashcard_stats_percent(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_flashcard_stats_percent(request, stats_id):
     try:
@@ -553,6 +590,7 @@ def get_flashcard_stats_percent(request, stats_id):
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['PUT'])
 def update_flashcard_stats_percent(request, stats_id):
     try:
@@ -564,6 +602,7 @@ def update_flashcard_stats_percent(request, stats_id):
         return Response({"message": "FlashcardStatsPercent updated successfully"}, status=status.HTTP_200_OK)
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['DELETE'])
 def delete_flashcard_stats_percent(request, stats_id):
