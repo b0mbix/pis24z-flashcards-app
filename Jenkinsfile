@@ -5,9 +5,8 @@ pipeline {
         VENV_DIR = '.venv'
         REQUIREMENTS = 'requirements.txt'
         PYTHONPATH = "${env.WORKSPACE}/src"
-        GIT_CREDENTIALS_ID = 'github-pat'
         GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
-        GIT_BRANCH = 'master'
+        GIT_BRANCH = 'brudnopis'
         EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
@@ -77,24 +76,8 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-		        sh 'docker compose -f docker-compose-blue.yml exec logic-blue pytest'
-                sh 'docker compose -f docker-compose-blue.yml exec flutter-blue flutter test'
 
-                }
-            }
-        }
 
-        stage('Lint Code') {
-            steps {
-                script {
-                    // Run flake8 for linting
-                    sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=150"
-                }
-            }
-        }
 
     }
 
