@@ -13,7 +13,6 @@ from .models import (
     FlashcardStatsPercent,
 )
 
-admin.site.register(User)
 admin.site.register(FlashcardSet)
 admin.site.register(Flashcard)
 admin.site.register(Tag)

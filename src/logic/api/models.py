@@ -1,20 +1,6 @@
-from django.contrib.auth.models import User as AuthUser
+from django.contrib.auth.models import User
 from django.db import models
 from datetime import timedelta
-
-
-class User(models.Model):
-    username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    auth_user = models.OneToOneField(AuthUser, on_delete=models.CASCADE, related_name="custom_user", null=True)
-
-    class Meta:
-        db_table = 'users'
-
-    def __str__(self):
-        return self.username
 
 
 class FlashcardSet(models.Model):
