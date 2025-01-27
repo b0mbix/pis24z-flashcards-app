@@ -613,3 +613,56 @@ def delete_flashcard_stats_percent(request, stats_id):
         return Response({"message": "FlashcardStatsPercent deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+##############################
+# custom flashcard-sets
+##############################
+
+
+@api_view(['GET'])
+def get_public_flashcard_sets(request):
+    flashcard_sets = FlashcardSet.objects.filter(is_public=True)
+    response = []
+    for flashcard_set in flashcard_sets:
+        response.append({
+            "id": flashcard_set.id,
+            "name": flashcard_set.name,
+            "description": flashcard_set.description,
+            "flashcards_count": flashcard_set.flashcards.count(),
+            "owner_id": flashcard_set.user.id,
+        })
+    return Response(response, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcard_sets_by_user(request):
+    user = request.user
+    flashcard_sets = FlashcardSet.objects.filter(user=user)
+    response = []
+    for flashcard_set in flashcard_sets:
+        response.append({
+            "id": flashcard_set.id,
+            "name": flashcard_set.name,
+            "description": flashcard_set.description,
+            "flashcards_count": flashcard_set.flashcards.count(),
+        })
+    return Response(response, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcard_sets_favorites_by_user(request):
+    user = request.user
+    flashcard_sets = FlashcardSetFavorite.objects.filter(user=user)
+    response = []
+    for flashcard_set in flashcard_sets:
+        response.append({
+            "id": flashcard_set.set.id,
+            "name": flashcard_set.set.name,
+            "description": flashcard_set.set.description,
+            "flashcards_count": flashcard_set.set.flashcards.count(),
+            "owner_id": flashcard_set.set.user.id,
+        })
+    return Response(response, status=status.HTTP_200_OK)
