@@ -1,0 +1,35 @@
+[
+    {
+      "model": "api.FlashcardFavorite",
+      "pk": 1,
+      "fields": {
+        "user_id": 1,
+        "flashcard_id": 1
+      }
+    },
+    {
+      "model": "api.FlashcardFavorite",
+      "pk": 2,
+      "fields": {
+        "user_id": 2,
+        "flashcard_id": 2
+      }
+    },
+    {
+      "model": "api.FlashcardFavorite",
+      "pk": 3,
+      "fields": {
+        "user_id": 3,
+        "flashcard_id": 3
+      }
+    },
+    {
+      "model": "api.FlashcardFavorite",
+      "pk": 4,
+      "fields": {
+        "user_id": 4,
+        "flashcard_id": 4
+      }
+    }
+  ]
+  

@@ -1,0 +1,44 @@
+[
+  {
+      "model": "api.flashcardsetstats",
+      "pk": 1,
+      "fields": {
+          "user_id": 1,
+          "set_id": 1,
+          "flashcards_viewed": 7,
+          "total_study_time": "00:15:00"
+      }
+  },
+  {
+      "model": "api.flashcardsetstats",
+      "pk": 2,
+      "fields": {
+          "user_id": 2,
+          "set_id": 2,
+          "flashcards_viewed": 5,
+          "total_study_time": "00:10:00"
+      }
+  },
+  {
+      "model": "api.flashcardsetstats",
+      "pk": 3,
+      "fields": {
+          "user_id": 3,
+          "set_id": 3,
+          "flashcards_viewed": 3,
+          "total_study_time": "00:05:00"
+      }
+  },
+  {
+      "model": "api.flashcardsetstats",
+      "pk": 4,
+      "fields": {
+          "user_id": 4,
+          "set_id": 4,
+          "flashcards_viewed": 6,
+          "total_study_time": "00:12:00"
+      }
+  }
+]
+
+  
