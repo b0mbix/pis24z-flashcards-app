@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Budowanie ścieżek w projekcie
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,20 @@ else:  # domyślnie "green"
 print("ENVIRONMENT:", ENVIRONMENT)
 print("DATABASES:", DATABASES)
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+}
+
 # Aplikacje w projekcie
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,6 +70,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 # Middleware (pośrednicy)
@@ -131,4 +148,6 @@ STATIC_URL = 'static/'
 # Typ pola identyfikatora dla nowych obiektów w bazie danych
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Dodatkowe ustawienia związane z Elasticsearch, Minio, itp. można dodać w podobny sposób
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, "api/fixtures/")
+]

@@ -1,0 +1,44 @@
+[
+    {
+        "model": "api.Tag",
+        "pk": 1,
+        "fields": {
+            "name": "Języki"
+        }
+    },
+    {
+        "model": "api.Tag",
+        "pk": 2,
+        "fields": {
+            "name": "Historia"
+        }
+    },
+    {
+        "model": "api.Tag",
+        "pk": 3,
+        "fields": {
+            "name": "Matematyka"
+        }
+    },
+    {
+        "model": "api.Tag",
+        "pk": 4,
+        "fields": {
+            "name": "Programowanie"
+        }
+    },
+    {
+        "model": "api.Tag",
+        "pk": 5,
+        "fields": {
+            "name": "Hiszpański"
+        }
+    },
+    {
+        "model": "api.Tag",
+        "pk": 6,
+        "fields": {
+            "name": "Wzory"
+        }
+    }
+]

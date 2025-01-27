@@ -2,7 +2,7 @@
 name = "pis24z--logic"
 version = "0.1.0"
 description = "Flashcards-app logic written in Django"
-authors = ["Your Name <you@example.com>"]
+authors = ["Jakub Bąba <jakub.baba.stud@pw.edu.pl>", "Michał Brzeziński <michal.brzezinski4.stud@pw.edu.pl>", "Angelika Ostrowska <angelika.ostrowska.stud@pw.edu.pl>", "Kacper Straszak <kacper.straszak.stud@pw.edu.pl>", "Jakub Śledź <jakub.sledz.stud@pw.edu.pl>"]
 readme = "README.md"
 package-mode = false
 
@@ -22,7 +22,8 @@ djangorestframework = "^3.15.2"
 django-cors-headers = "^4.6.0"
 pytest-django = "^4.9.0"
 pytest-cov = "^6.0.0"
-
+drf-yasg = "*"
+djangorestframework-simplejwt = "^5.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.9.0"

@@ -12,7 +12,7 @@ def api_client():
 
 @pytest.fixture
 def test_user():
-    return User.objects.create(username="adam123", email="superadam@test.com", password_hash="321mada")
+    return User.objects.create(username="adam123", email="superadam@test.com", password="321mada")
 
 
 @pytest.mark.django_db
@@ -21,7 +21,7 @@ def test_add_user(api_client):
     data = {
         "username": "test_użytkownik",
         "email": "test@tururu.com",
-        "password_hash": "giga_bezpieczne_hasło",
+        "password": "giga_bezpieczne_hasło",
         "birth_date": "1995-04-20",
         "is_premium": True
     }
