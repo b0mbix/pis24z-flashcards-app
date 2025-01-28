@@ -112,7 +112,7 @@ class FlashcardStatsSimple(models.Model):
 
     class Meta:
         db_table = 'flashcardstatssimple'
-        unique_together = ('user', 'flashcard')  
+        unique_together = ('user', 'flashcard')
 
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.id} (Views: {self.view_count})"

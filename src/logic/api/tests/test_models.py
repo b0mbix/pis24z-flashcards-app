@@ -6,7 +6,7 @@ from api.models import (
     FlashcardFavorite, FlashcardSetStats, FlashcardStatsSimple, FlashcardStatsStages,
     FlashcardStatsPercent
 )
-from datetime import timedelta
+# from datetime import timedelta
 from django.db import connections
 
 
@@ -177,7 +177,7 @@ def test_flashcard_stats_percent_unique_constraint():
     flashcard_set = FlashcardSet.objects.create(user=user, name="Fiszki z biologii")
     flashcard = Flashcard.objects.create(set=flashcard_set, question="Co to jest fotosynteza?", answer="Proces produkcji energii.")
     FlashcardStatsPercent.objects.create(user=user, flashcard=flashcard, view_count=2, learning_stage="still_learning")
-    
+
     # Próba stworzenia duplikatu powinna rzucić wyjątek
     with pytest.raises(IntegrityError):
         FlashcardStatsPercent.objects.create(user=user, flashcard=flashcard, view_count=2, learning_stage="learned")
