@@ -149,10 +149,14 @@ def delete_flashcard_set(request, set_id):
 # Flashcard
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_flashcard(request):
     try:
         data = request.data
+        user = request.user
         flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
+        if flashcard_set.user != user:
+            return Response({"error": "You are not the owner of this flashcard set"}, status=status.HTTP_403_FORBIDDEN)
         flashcard = Flashcard.objects.create(
             set=flashcard_set,
             question=data.get('question'),
@@ -685,7 +689,15 @@ def get_stages_study_summary(request, set_id):
     }
     max_stage = flashcards.aggregate(max_stage=Max('flashcardstatsstages__stage'))['max_stage']
     for stage in range(1, max_stage + 1):
-        learned = flashcards.filter(flashcardstatsstages__user=request.user, flashcardstatsstages__stage=stage, flashcardstatsstages__learned=True).count()
-        not_learned = flashcards.filter(flashcardstatsstages__user=request.user, flashcardstatsstages__stage=stage, flashcardstatsstages__learned=False).count()
+        learned = flashcards.filter(
+            flashcardstatsstages__user=request.user,
+            flashcardstatsstages__stage=stage,
+            flashcardstatsstages__learned=True
+        ).count()
+        not_learned = flashcards.filter(
+            flashcardstatsstages__user=request.user,
+            flashcardstatsstages__stage=stage,
+            flashcardstatsstages__learned=False
+        ).count()
         stages["stages"].append({"learned_amount": learned, "not_learned_amount": not_learned})
     return Response(stages, status=status.HTTP_200_OK)
