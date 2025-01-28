@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 # from rest_framework.views import APIView
 from .serializers import LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
@@ -6,12 +6,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.views.decorators.csrf import csrf_exempt
 from minio import Minio
 from minio.error import S3Error
-import os
+import requests
 
 from datetime import datetime, timedelta
 from .models import (
@@ -657,12 +655,26 @@ def upload_flashcard_image(request, flashcard_id):
 
 @csrf_exempt
 def get_flashcard_image(request, flashcard_id):
+    try:
+        proxy_url = f"http://localhost:8000/api/flashcard-image/{flashcard_id}/proxy/"
+        return JsonResponse({"url": proxy_url})
+    except S3Error as e:
+        return JsonResponse({"error": "Image not found", "details": str(e)}, status=404)
+    
+
+@csrf_exempt
+def proxy_flashcard_image(request, flashcard_id):
     file_name = f"{flashcard_id}.jpg"
     bucket_name = "flashcards"
 
     try:
         presigned_url = client.presigned_get_object(bucket_name, file_name)
-        return JsonResponse({"url": presigned_url})
+
+        response = requests.get(presigned_url, stream=True)
+        if response.status_code == 200:
+            return HttpResponse(response.content, content_type="image/jpeg")
+        else:
+            return JsonResponse({"error": "Image not found"}, status=404)
     except S3Error as e:
         return JsonResponse({"error": "Image not found", "details": str(e)}, status=404)
 

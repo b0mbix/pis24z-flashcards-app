@@ -63,4 +63,5 @@ urlpatterns = [
     path("flashcard-image/<int:flashcard_id>/upload/", views.upload_flashcard_image, name="upload_image"),
     path("flashcard-image/<int:flashcard_id>/get/", views.get_flashcard_image, name="get_image"),
     path("flashcard-image/<int:flashcard_id>/delete/", views.delete_flashcard_image, name="delete_image"),
+    path("flashcard-image/<int:flashcard_id>/proxy/", views.proxy_flashcard_image, name="proxy_image"),
 ]
