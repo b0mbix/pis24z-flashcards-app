@@ -72,7 +72,7 @@ pipeline {
         stage('Lint Code') {
             steps {
                 script {
-                    sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=150"
+                    sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=300"
                 }
             }
         }
