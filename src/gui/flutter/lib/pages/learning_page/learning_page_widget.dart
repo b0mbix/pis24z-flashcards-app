@@ -30,6 +30,8 @@ class _LearningPageWidgetState extends State<LearningPageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => LearningPageModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

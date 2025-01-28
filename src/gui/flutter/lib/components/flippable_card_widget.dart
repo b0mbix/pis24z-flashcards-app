@@ -27,6 +27,8 @@ class _FlippableCardWidgetState extends State<FlippableCardWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => FlippableCardModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

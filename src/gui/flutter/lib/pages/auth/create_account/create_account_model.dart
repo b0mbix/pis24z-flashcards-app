@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -20,14 +21,10 @@ class CreateAccountModel extends FlutterFlowModel<CreateAccountWidget> {
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode2;
   TextEditingController? textController2;
-  String? Function(BuildContext, String?)? textController2Validator;
-  // State field(s) for TextField widget.
-  FocusNode? textFieldFocusNode3;
-  TextEditingController? textController3;
   late bool passwordVisibility;
-  String? Function(BuildContext, String?)? textController3Validator;
-  // State field(s) for CheckboxListTile widget.
-  bool? checkboxListTileValue;
+  String? Function(BuildContext, String?)? textController2Validator;
+  // Stores action output result for [Backend Call - API (registerUser)] action in Button widget.
+  ApiCallResponse? registerBody;
 
   @override
   void initState(BuildContext context) {
@@ -41,8 +38,5 @@ class CreateAccountModel extends FlutterFlowModel<CreateAccountWidget> {
 
     textFieldFocusNode2?.dispose();
     textController2?.dispose();
-
-    textFieldFocusNode3?.dispose();
-    textController3?.dispose();
   }
 }

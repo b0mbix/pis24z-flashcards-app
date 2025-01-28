@@ -34,6 +34,8 @@ class _CardRowWidgetState extends State<CardRowWidget> {
 
     _model.textController2 ??= TextEditingController(text: 'Karta 2');
     _model.textFieldFocusNode2 ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

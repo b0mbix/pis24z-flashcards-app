@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -44,6 +45,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -318,7 +321,44 @@ class _LoginWidgetState extends State<LoginWidget> {
                           16.0, 12.0, 16.0, 24.0),
                       child: FFButtonWidget(
                         onPressed: () async {
-                          context.pushNamed('MainPage');
+                          _model.apiResult9ug = await LoginUserCall.call(
+                            userLogin: _model.textController1.text,
+                            userPassword: _model.textController2.text,
+                          );
+
+                          if ((_model.apiResult9ug?.succeeded ?? true)) {
+                            FFAppState().accessToken = getJsonField(
+                              (_model.apiResult9ug?.jsonBody ?? ''),
+                              r'''$["access"]''',
+                            ).toString();
+                            safeSetState(() {});
+                            FFAppState().refreshToken = getJsonField(
+                              (_model.apiResult9ug?.jsonBody ?? ''),
+                              r'''$["refresh"]''',
+                            ).toString();
+                            safeSetState(() {});
+
+                            context.pushNamed('MainPage');
+                          } else {
+                            await showDialog(
+                              context: context,
+                              builder: (alertDialogContext) {
+                                return AlertDialog(
+                                  title: Text('Sorry!'),
+                                  content: Text('Wrong username or password'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(alertDialogContext),
+                                      child: Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+
+                          safeSetState(() {});
                         },
                         text: 'Login',
                         options: FFButtonOptions(
