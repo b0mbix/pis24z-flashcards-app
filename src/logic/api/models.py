@@ -22,6 +22,9 @@ class FlashcardSet(models.Model):
     def __str__(self):
         return self.name
 
+    def flashcards_count(self):
+        return self.flashcards.count()
+
     def calculate_learning_progress(self, user):
         progress = self.flashcards.filter(flashcardstatspercent__user_id=user.id).aggregate(
             avg_progress=Avg(

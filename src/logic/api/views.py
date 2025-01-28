@@ -1,5 +1,6 @@
 # from django.http import JsonResponse
 # from rest_framework.views import APIView
+import random
 from .serializers import FlashcardSetSerializer, LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -660,3 +661,34 @@ def get_flashcard_sets_favorites_by_user(request):
     flashcard_sets = FlashcardSetFavorite.objects.filter(user=user)
     serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_shuffled_flashcards(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcards = list(flashcard_set.flashcards.all())
+    random.shuffle(flashcards)
+    return Response(
+        {
+            "flashcards": [
+                {"question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def increment_flashcard_set_views(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set.views_count += 1
+    flashcard_set.save()
+    ids = request.data.get('ids', [])
+    flashcards = Flashcard.objects.filter(id__in=ids)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsSimple.objects.get_or_create(user=request.user, flashcard=flashcard)
+        flashcard_stats.view_count += 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard set views incremented"}, status=status.HTTP_200_OK)
