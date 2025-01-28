@@ -43,7 +43,7 @@ services:
   flutter-blue:
     build:
       context: ./src/gui/flutter
-      dockerfile: Dockerfile_vm
+      dockerfile: Dockerfile
     ports:
       - "5554:8083"
     volumes:

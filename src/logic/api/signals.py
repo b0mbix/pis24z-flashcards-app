@@ -5,9 +5,10 @@ import os
 from django.conf import settings
 import glob
 
+
 @receiver(post_migrate)
 def load_fixtures(sender, **kwargs):
-    fixtures_path = os.path.join(settings.BASE_DIR, 'api/fixtures/*.json') 
+    fixtures_path = os.path.join(settings.BASE_DIR, 'api/fixtures/*.json')
     fixtures = sorted(glob.glob(fixtures_path))
 
     for fixture in fixtures:

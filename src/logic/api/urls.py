@@ -9,11 +9,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('test-auth/', views.test_auth, name='test_auth'),
 
-    path('users/add/', views.add_user, name='add_user'),
-    path('users/<int:user_id>/get/', views.get_user, name='get_user'),
-    path('users/<int:user_id>/update/', views.update_user, name='update_user'),
-    path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
-
     path('flashcard-sets/add/', views.add_flashcard_set, name='add_flashcard_set'),
     path('flashcard-sets/all/', views.get_flashcard_sets, name='get_flashcard_sets'),
     path('flashcard-sets/<int:set_id>/get/', views.get_flashcard_set, name='get_flashcard_set'),
@@ -33,9 +28,6 @@ urlpatterns = [
 
     path('flashcard-sets/tags/add/', views.add_flashcard_set_tag, name='add_flashcard_set_tag'),
     path('flashcard-sets/tags/delete/', views.delete_flashcard_set_tag, name='delete_flashcard_set_tag'),
-
-    path('flashcard-set-favorite/add/', views.add_flashcard_set_to_favorites, name='add_flashcard_set_to_favorites'),
-    path('flashcard-set-favorite/<int:user_id>/delete/', views.remove_flashcard_set_from_favorites, name='delete_flashcard_set_from_favorites'),
 
     path('flashcard-favorites/add/', views.add_flashcard_to_favorites, name='add_flashcard_to_favorites'),
     path('flashcard-favorites/<int:user_id>/delete/', views.remove_flashcard_from_favorites, name='delete_flashcard_from_favorites'),
@@ -68,6 +60,16 @@ urlpatterns = [
         views.get_flashcard_sets_favorites_by_user,
         name='get_flashcard_sets_favorites_by_user'
     ),
+    path(
+        'flashcard-sets/<int:set_id>/set-favorite/',
+        views.set_flashcard_set_favorite,
+        name='set_flashcard_set_favorite'
+    ),
+    path(
+        'flashcard-sets/<int:set_id>/unset-favorite/',
+        views.unset_flashcard_set_favorite,
+        name='unset_flashcard_set_favorite'
+    ),
 
     path(
         'study/1/set/<int:set_id>/get-shuffled/',
@@ -79,4 +81,24 @@ urlpatterns = [
         views.increment_flashcard_set_views,
         name='increment_flashcard_set_views'
     ),
+    path(
+        'study/2/set/<int:set_id>/reset-stages/',
+        views.reset_flashcard_stats_stages,
+        name='reset_flashcard_stats_stages'
+    ),
+    path(
+        'study/2/set/<int:set_id>/get-flashcards/',
+        views.get_flashcards_for_study,
+        name='get_flashcards_for_study'
+    ),
+    path(
+        'study/2/set/<int:set_id>/set-stage-status/',
+        views.update_flashcard_stages,
+        name='update_flashcard_stages'
+    ),
+    path(
+        'study/2/set/<int:set_id>/get-study-summary/',
+        views.get_stages_study_summary,
+        name='get_stages_study_summary'
+    )
 ]
