@@ -63,6 +63,8 @@ urlpatterns = [
         views.get_flashcard_sets_favorites_by_user,
         name='get_flashcard_sets_favorites_by_user'
     ),
+    path('flashcard-sets/<int:set_id>/set-favorite/', views.set_flashcard_set_favorite, name='set_flashcard_set_favorite'),
+    path('flashcard-sets/<int:set_id>/unset-favorite/', views.unset_flashcard_set_favorite, name='unset_flashcard_set_favorite'),
 
     path(
         'study/1/set/<int:set_id>/get-shuffled/',

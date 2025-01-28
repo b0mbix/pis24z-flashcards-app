@@ -574,7 +574,7 @@ def delete_flashcard_stats_percent(request, stats_id):
 
 
 ##############################
-# custom flashcard-sets
+# flashcard sets endpoints
 ##############################
 
 @api_view(['GET'])
@@ -602,6 +602,27 @@ def get_flashcard_sets_favorites_by_user(request):
     flashcard_sets = FlashcardSetFavorite.objects.filter(user=user)
     serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def set_flashcard_set_favorite(request, set_id):
+    user = request.user
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set_favorite, created = FlashcardSetFavorite.objects.get_or_create(user=user, set=flashcard_set)
+    if created:
+        return Response({"message": "Flashcard set added to favorites"}, status=status.HTTP_201_CREATED)
+    return Response({"message": "Flashcard set already in favorites"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unset_flashcard_set_favorite(request, set_id):
+    user = request.user
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
+    flashcard_set_favorite.delete()
+    return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
 
 
 ##############################
