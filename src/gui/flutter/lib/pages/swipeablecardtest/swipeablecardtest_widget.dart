@@ -37,6 +37,8 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
       _model.currentCardText = _model.cardTexts.toList().cast<String>();
       safeSetState(() {});
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

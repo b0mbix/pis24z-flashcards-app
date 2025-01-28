@@ -21,16 +21,10 @@ class CreateAccountModel extends FlutterFlowModel<CreateAccountWidget> {
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode2;
   TextEditingController? textController2;
-  String? Function(BuildContext, String?)? textController2Validator;
-  // State field(s) for TextField widget.
-  FocusNode? textFieldFocusNode3;
-  TextEditingController? textController3;
   late bool passwordVisibility;
-  String? Function(BuildContext, String?)? textController3Validator;
-  // State field(s) for CheckboxListTile widget.
-  bool? checkboxListTileValue;
-  // Stores action output result for [Backend Call - API (createUser)] action in Button widget.
-  ApiCallResponse? apiResult73b;
+  String? Function(BuildContext, String?)? textController2Validator;
+  // Stores action output result for [Backend Call - API (registerUser)] action in Button widget.
+  ApiCallResponse? registerBody;
 
   @override
   void initState(BuildContext context) {
@@ -44,8 +38,5 @@ class CreateAccountModel extends FlutterFlowModel<CreateAccountWidget> {
 
     textFieldFocusNode2?.dispose();
     textController2?.dispose();
-
-    textFieldFocusNode3?.dispose();
-    textController3?.dispose();
   }
 }

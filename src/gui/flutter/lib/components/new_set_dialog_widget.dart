@@ -34,6 +34,8 @@ class _NewSetDialogWidgetState extends State<NewSetDialogWidget> {
 
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

@@ -86,9 +86,15 @@ class FFAppState extends ChangeNotifier {
     SetNames.insert(index, value);
   }
 
-  String _authToken = '';
-  String get authToken => _authToken;
-  set authToken(String value) {
-    _authToken = value;
+  String _accessToken = '';
+  String get accessToken => _accessToken;
+  set accessToken(String value) {
+    _accessToken = value;
+  }
+
+  String _refreshToken = '';
+  String get refreshToken => _refreshToken;
+  set refreshToken(String value) {
+    _refreshToken = value;
   }
 }
