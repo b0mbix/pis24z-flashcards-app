@@ -119,16 +119,21 @@ def delete_user(request, user_id):
 # FlashcardSet
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_flashcard_set(request):
+    user = request.user
     try:
         data = request.data
-        user = User.objects.get(id=data.get('user_id'))
         flashcard_set = FlashcardSet.objects.create(
             user=user,
             name=data.get('name'),
-            description=data.get('description', '')
+            description=data.get('description', ''),
+            is_public=data.get('is_public', False),
         )
-        return Response({"message": "Flashcard set created successfully", "set_id": flashcard_set.id}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Flashcard set created successfully", "set_id": flashcard_set.id},
+            status=status.HTTP_201_CREATED
+        )
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
