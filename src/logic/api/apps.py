@@ -6,5 +6,6 @@ class ApiConfig(AppConfig):
     name = 'api'
 
     def ready(self):
-        import api.signals
-
+        # TODO - uncomment if needed when needed, delete if not and remove "pass"
+        # import api.signals
+        pass

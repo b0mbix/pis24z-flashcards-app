@@ -43,7 +43,7 @@ services:
   flutter:
     build:
       context: ./src/gui/flutter
-      dockerfile: Dockerfile_vm
+      dockerfile: Dockerfile
     ports:
       - "8083:8083"
     volumes:
@@ -65,7 +65,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - logic_data:/app
+     - logic_data:/app
     command: sh -c "sleep 5 && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - postgres
@@ -102,4 +102,4 @@ volumes:
   es_data:
   minio_data:
   flutter_data:
-  # logic_data:
+  logic_data:
