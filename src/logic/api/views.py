@@ -688,7 +688,7 @@ def increment_flashcard_set_views(request, set_id):
     ids = request.data.get('ids', [])
     flashcards = Flashcard.objects.filter(id__in=ids)
     for flashcard in flashcards:
-        flashcard_stats = FlashcardStatsSimple.objects.get_or_create(user=request.user, flashcard=flashcard)
+        flashcard_stats, created = FlashcardStatsSimple.objects.get_or_create(user=request.user, flashcard=flashcard)
         flashcard_stats.view_count += 1
         flashcard_stats.save()
     return Response({"message": "Flashcard set views incremented"}, status=status.HTTP_200_OK)
