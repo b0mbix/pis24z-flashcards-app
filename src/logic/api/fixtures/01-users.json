@@ -3,7 +3,7 @@
         "model": "auth.User",
         "pk": 1,
         "fields": {
-            "username": "grzegorz_kolano",
+            "username": "fiszki_lover",
             "password": "kochampis",
             "date_joined": "2024-01-01T10:00:00Z"
         }
