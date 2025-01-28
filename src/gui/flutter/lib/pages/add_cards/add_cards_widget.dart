@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/components/card_row_widget.dart';
 import '/components/input_row_widget.dart';
 import '/components/new_set_dialog_widget.dart';
@@ -10,6 +11,7 @@ import '/flutter_flow/form_field_controller.dart';
 import 'dart:ui';
 import '/flutter_flow/random_data_util.dart' as random_data;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'add_cards_model.dart';
@@ -31,6 +33,31 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => AddCardsModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.apiResultmhw = await ApiCallssssGroup.getAllSetsCall.call();
+
+      if ((_model.apiResultmhw?.succeeded ?? true)) {
+        _model.setNames = getJsonField(
+          (_model.apiResultmhw?.jsonBody ?? ''),
+          r'''$[:].name''',
+          true,
+        )!
+            .toList()
+            .cast<dynamic>();
+        _model.setIds = getJsonField(
+          (_model.apiResultmhw?.jsonBody ?? ''),
+          r'''$[:].id''',
+          true,
+        )!
+            .toList()
+            .cast<int>();
+        safeSetState(() {});
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -96,17 +123,27 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
                                     controller:
                                         _model.dropDownValueController1 ??=
                                             FormFieldController<String>(null),
-                                    options: [
-                                      'Set 1',
-                                      'Set 2',
-                                      'Set 3',
-                                      'Set 4',
-                                      'Set 5'
-                                    ],
+                                    options: _model.setNames
+                                        .map((e) => e.toString())
+                                        .toList(),
                                     onChanged: (val) => safeSetState(
                                         () => _model.dropDownValue1 = val),
                                     width: 200.0,
                                     height: 40.0,
+                                    searchHintTextStyle:
+                                        FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .override(
+                                              fontFamily: 'Inter',
+                                              letterSpacing: 0.0,
+                                            ),
+                                    searchTextStyle:
+                                        FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Inter',
+                                              letterSpacing: 0.0,
+                                            ),
                                     textStyle: FlutterFlowTheme.of(context)
                                         .bodyMedium
                                         .override(
@@ -114,6 +151,7 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
                                           letterSpacing: 0.0,
                                         ),
                                     hintText: 'Select...',
+                                    searchHintText: 'Search...',
                                     icon: Icon(
                                       Icons.keyboard_arrow_down_rounded,
                                       color: FlutterFlowTheme.of(context)
@@ -130,7 +168,7 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
                                         12.0, 0.0, 12.0, 0.0),
                                     hidesUnderline: true,
                                     isOverButton: false,
-                                    isSearchable: false,
+                                    isSearchable: true,
                                     isMultiSelect: false,
                                   ),
                                 ),
@@ -265,7 +303,9 @@ class _AddCardsWidgetState extends State<AddCardsWidget> {
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
                                         },
-                                        child: NewSetDialogWidget(),
+                                        child: NewSetDialogWidget(
+                                          setId: 0,
+                                        ),
                                       ),
                                     );
                                   },

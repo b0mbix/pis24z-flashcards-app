@@ -25,6 +25,8 @@ class _StartScreenWidgetState extends State<StartScreenWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => StartScreenModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

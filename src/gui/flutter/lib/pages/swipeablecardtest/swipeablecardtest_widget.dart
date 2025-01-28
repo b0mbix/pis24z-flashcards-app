@@ -3,7 +3,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,12 @@ import 'swipeablecardtest_model.dart';
 export 'swipeablecardtest_model.dart';
 
 class SwipeablecardtestWidget extends StatefulWidget {
-  const SwipeablecardtestWidget({super.key});
+  const SwipeablecardtestWidget({
+    super.key,
+    this.cardData1,
+  });
+
+  final List<dynamic>? cardData1;
 
   @override
   State<SwipeablecardtestWidget> createState() =>
@@ -32,11 +36,7 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
     super.initState();
     _model = createModel(context, () => SwipeablecardtestModel());
 
-    // On component load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.currentCardText = _model.cardTexts.toList().cast<String>();
-      safeSetState(() {});
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -50,16 +50,20 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final testCardData = _model.currentCardText.toList();
+        final cardsDataxd = widget!.cardData1?.toList() ?? [];
 
         return FlutterFlowSwipeableStack(
-          onSwipeFn: (index) {},
+          onSwipeFn: (index) async {
+            final cardsDataxdItem = cardsDataxd[index];
+            _model.showFront = !_model.showFront;
+            safeSetState(() {});
+          },
           onLeftSwipe: (index) {},
           onRightSwipe: (index) {},
           onUpSwipe: (index) {},
           onDownSwipe: (index) {},
-          itemBuilder: (context, testCardDataIndex) {
-            final testCardDataItem = testCardData[testCardDataIndex];
+          itemBuilder: (context, cardsDataxdIndex) {
+            final cardsDataxdItem = cardsDataxd[cardsDataxdIndex];
             return Padding(
               padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
               child: InkWell(
@@ -68,11 +72,7 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () async {
-                  _model.updateCurrentCardTextAtIndex(
-                    testCardDataIndex,
-                    (_) => _model.cardFlippedTexts
-                        .elementAtOrNull(testCardDataIndex)!,
-                  );
+                  _model.showFront = !_model.showFront;
                   safeSetState(() {});
                 },
                 child: Container(
@@ -103,7 +103,15 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              testCardDataItem,
+                              _model.showFront
+                                  ? getJsonField(
+                                      cardsDataxdItem,
+                                      r'''$.question''',
+                                    ).toString()
+                                  : getJsonField(
+                                      cardsDataxdItem,
+                                      r'''$.answer''',
+                                    ).toString(),
                               textAlign: TextAlign.center,
                               style: FlutterFlowTheme.of(context)
                                   .headlineSmall
@@ -203,7 +211,7 @@ class _SwipeablecardtestWidgetState extends State<SwipeablecardtestWidget> {
               ),
             );
           },
-          itemCount: testCardData.length,
+          itemCount: cardsDataxd.length,
           controller: _model.swipeableStackController,
           loop: false,
           cardDisplayCount: 3,

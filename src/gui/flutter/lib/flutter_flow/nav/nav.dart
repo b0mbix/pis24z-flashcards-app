@@ -55,9 +55,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'learningPage',
           path: '/learningPage',
           builder: (context, params) => LearningPageWidget(
-            currentSet: params.getParam(
-              'currentSet',
-              ParamType.String,
+            currentSetId: params.getParam(
+              'currentSetId',
+              ParamType.int,
+            ),
+            algorithm: params.getParam(
+              'algorithm',
+              ParamType.int,
             ),
           ),
         ),

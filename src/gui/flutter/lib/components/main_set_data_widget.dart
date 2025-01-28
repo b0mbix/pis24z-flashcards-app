@@ -1,3 +1,4 @@
+import '/components/learning_type_select_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'dart:ui';
@@ -10,10 +11,16 @@ export 'main_set_data_model.dart';
 class MainSetDataWidget extends StatefulWidget {
   const MainSetDataWidget({
     super.key,
-    this.setName,
+    required this.setName,
+    required this.setDesc,
+    required this.cardAmount,
+    required this.setId,
   });
 
   final String? setName;
+  final String? setDesc;
+  final int? cardAmount;
+  final int? setId;
 
   @override
   State<MainSetDataWidget> createState() => _MainSetDataWidgetState();
@@ -73,7 +80,7 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                       Text(
                         valueOrDefault<String>(
                           widget!.setName,
-                          'XD',
+                          'xd',
                         ),
                         style:
                             FlutterFlowTheme.of(context).titleMedium.override(
@@ -82,7 +89,10 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                                 ),
                       ),
                       Text(
-                        'Description',
+                        valueOrDefault<String>(
+                          widget!.setDesc,
+                          'desc',
+                        ),
                         style: FlutterFlowTheme.of(context).bodySmall.override(
                               fontFamily: 'Inter',
                               color: FlutterFlowTheme.of(context).secondaryText,
@@ -90,7 +100,10 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                             ),
                       ),
                       Text(
-                        'Ilość fiszek',
+                        valueOrDefault<String>(
+                          widget!.cardAmount?.toString(),
+                          'xd',
+                        ),
                         style: FlutterFlowTheme.of(context).bodySmall.override(
                               fontFamily: 'Inter',
                               color: FlutterFlowTheme.of(context).secondaryText,
@@ -99,33 +112,35 @@ class _MainSetDataWidgetState extends State<MainSetDataWidget> {
                       ),
                     ],
                   ),
-                  InkWell(
-                    splashColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () async {
-                      context.pushNamed(
-                        'learningPage',
-                        queryParameters: {
-                          'currentSet': serializeParam(
-                            widget!.setName,
-                            ParamType.String,
-                          ),
-                        }.withoutNulls,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 100),
-                          ),
-                        },
-                      );
-                    },
-                    child: Icon(
-                      Icons.play_circle_fill,
-                      color: FlutterFlowTheme.of(context).primary,
-                      size: 32.0,
+                  Builder(
+                    builder: (context) => InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        await showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (dialogContext) {
+                            return Dialog(
+                              elevation: 0,
+                              insetPadding: EdgeInsets.zero,
+                              backgroundColor: Colors.transparent,
+                              alignment: AlignmentDirectional(0.0, 0.0)
+                                  .resolve(Directionality.of(context)),
+                              child: LearningTypeSelectWidget(
+                                setId: widget!.setId!,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Icon(
+                        Icons.play_circle_fill,
+                        color: FlutterFlowTheme.of(context).primary,
+                        size: 32.0,
+                      ),
                     ),
                   ),
                 ],

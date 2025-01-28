@@ -1,9 +1,11 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/swipeablecardtest/swipeablecardtest_widget.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'learning_page_model.dart';
@@ -12,10 +14,12 @@ export 'learning_page_model.dart';
 class LearningPageWidget extends StatefulWidget {
   const LearningPageWidget({
     super.key,
-    required this.currentSet,
+    required this.currentSetId,
+    required this.algorithm,
   });
 
-  final String? currentSet;
+  final int? currentSetId;
+  final int? algorithm;
 
   @override
   State<LearningPageWidget> createState() => _LearningPageWidgetState();
@@ -30,6 +34,25 @@ class _LearningPageWidgetState extends State<LearningPageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => LearningPageModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (widget!.algorithm == 1) {
+        _model.shuffledCards = await ApiCallssssGroup.getShuffledSetCall.call(
+          setId: widget!.currentSetId,
+        );
+
+        if ((_model.shuffledCards?.succeeded ?? true)) {
+          _model.cardData = getJsonField(
+            (_model.shuffledCards?.jsonBody ?? ''),
+            r'''$.flashcards''',
+          );
+          safeSetState(() {});
+        }
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -51,12 +74,9 @@ class _LearningPageWidgetState extends State<LearningPageWidget> {
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
           backgroundColor: FlutterFlowTheme.of(context).primary,
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           title: Text(
-            valueOrDefault<String>(
-              widget!.currentSet,
-              'xd',
-            ),
+            _model.currenSetName,
             textAlign: TextAlign.start,
             style: FlutterFlowTheme.of(context).headlineMedium.override(
                   fontFamily: 'Inter Tight',
@@ -66,7 +86,7 @@ class _LearningPageWidgetState extends State<LearningPageWidget> {
                 ),
           ),
           actions: [],
-          centerTitle: false,
+          centerTitle: true,
           elevation: 2.0,
         ),
         body: SafeArea(
@@ -87,7 +107,9 @@ class _LearningPageWidgetState extends State<LearningPageWidget> {
                       child: wrapWithModel(
                         model: _model.swipeablecardtestModel,
                         updateCallback: () => safeSetState(() {}),
-                        child: SwipeablecardtestWidget(),
+                        child: SwipeablecardtestWidget(
+                          cardData1: _model.cardData,
+                        ),
                       ),
                     ),
                   ],

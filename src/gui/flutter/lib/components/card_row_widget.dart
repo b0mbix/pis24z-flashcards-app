@@ -29,11 +29,16 @@ class _CardRowWidgetState extends State<CardRowWidget> {
     super.initState();
     _model = createModel(context, () => CardRowModel());
 
-    _model.textController1 ??= TextEditingController(text: 'Karta 1');
+    _model.textController1 ??= TextEditingController();
     _model.textFieldFocusNode1 ??= FocusNode();
 
-    _model.textController2 ??= TextEditingController(text: 'Karta 2');
+    _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
+          _model.textController1?.text = 'Karta 1';
+          _model.textController2?.text = 'Karta 2';
+        }));
   }
 
   @override

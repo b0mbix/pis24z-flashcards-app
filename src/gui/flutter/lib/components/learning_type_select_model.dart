@@ -1,18 +1,13 @@
-import '/components/learning_type_select_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'dart:ui';
-import 'main_set_data_widget.dart' show MainSetDataWidget;
+import 'learning_type_select_widget.dart' show LearningTypeSelectWidget;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class MainSetDataModel extends FlutterFlowModel<MainSetDataWidget> {
-  ///  State fields for stateful widgets in this component.
-
-  // State field(s) for Slider widget.
-  double? sliderValue;
-
+class LearningTypeSelectModel
+    extends FlutterFlowModel<LearningTypeSelectWidget> {
   @override
   void initState(BuildContext context) {}
 

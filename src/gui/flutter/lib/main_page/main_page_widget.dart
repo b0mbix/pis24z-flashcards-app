@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/components/main_set_data_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -5,6 +6,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'main_page_model.dart';
@@ -27,6 +29,16 @@ class _MainPageWidgetState extends State<MainPageWidget> {
     super.initState();
     _model = createModel(context, () => MainPageModel());
 
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.returnSetData = await ApiCallssssGroup.getAllSetsCall.call();
+
+      if ((_model.returnSetData?.succeeded ?? true)) {
+        _model.setData = (_model.returnSetData?.jsonBody ?? '');
+        safeSetState(() {});
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -39,8 +51,6 @@ class _MainPageWidgetState extends State<MainPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -182,12 +192,14 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                                 min: 0.0,
                                 max: 100.0,
                                 value: _model.sliderValue ??= 75.0,
-                                onChanged: (newValue) {
-                                  newValue =
-                                      double.parse(newValue.toStringAsFixed(6));
-                                  safeSetState(
-                                      () => _model.sliderValue = newValue);
-                                },
+                                onChanged: true
+                                    ? null
+                                    : (newValue) {
+                                        newValue = double.parse(
+                                            newValue.toStringAsFixed(6));
+                                        safeSetState(() =>
+                                            _model.sliderValue = newValue);
+                                      },
                               ),
                             ),
                           ].divide(SizedBox(height: 16.0)),
@@ -204,30 +216,50 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                   ),
                   Builder(
                     builder: (context) {
-                      final displaySetNames = FFAppState().SetNames.toList();
+                      final setDataList = _model.setData?.toList() ?? [];
 
                       return ListView.builder(
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount: displaySetNames.length,
-                        itemBuilder: (context, displaySetNamesIndex) {
-                          final displaySetNamesItem =
-                              displaySetNames[displaySetNamesIndex];
+                        itemCount: setDataList.length,
+                        itemBuilder: (context, setDataListIndex) {
+                          final setDataListItem = setDataList[setDataListIndex];
                           return Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 15.0, 0.0, 0.0),
                             child: wrapWithModel(
                               model: _model.mainSetDataModels.getModel(
-                                displaySetNamesItem,
-                                displaySetNamesIndex,
+                                getJsonField(
+                                  setDataListItem,
+                                  r'''$.id''',
+                                ).toString(),
+                                setDataListIndex,
                               ),
                               updateCallback: () => safeSetState(() {}),
                               child: MainSetDataWidget(
                                 key: Key(
-                                  'Keyjgl_${displaySetNamesItem}',
+                                  'Keyjgl_${getJsonField(
+                                    setDataListItem,
+                                    r'''$.id''',
+                                  ).toString()}',
                                 ),
-                                setName: displaySetNamesItem,
+                                setName: getJsonField(
+                                  setDataListItem,
+                                  r'''$.name''',
+                                ).toString(),
+                                setDesc: getJsonField(
+                                  setDataListItem,
+                                  r'''$.description''',
+                                ).toString(),
+                                cardAmount: getJsonField(
+                                  setDataListItem,
+                                  r'''$.flashcards_count''',
+                                ),
+                                setId: getJsonField(
+                                  setDataListItem,
+                                  r'''$.id''',
+                                ),
                               ),
                             ),
                           );
