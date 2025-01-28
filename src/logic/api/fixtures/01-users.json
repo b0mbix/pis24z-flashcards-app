@@ -3,8 +3,8 @@
         "model": "auth.User",
         "pk": 1,
         "fields": {
-            "username": "jan_kowalski",
-            "password": "$2b$12$9xN1p",
+            "username": "grzegorz_kolano",
+            "password": "kochampis",
             "date_joined": "2024-01-01T10:00:00Z"
         }
     },
