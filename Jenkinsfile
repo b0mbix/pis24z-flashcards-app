@@ -4,29 +4,14 @@ pipeline {
     environment {
         VENV_DIR = '.venv'
         REQUIREMENTS = 'requirements.txt'
-        PYTHONPATH = "${env.WORKSPACE}/src"
-        GIT_CREDENTIALS_ID = 'github-pat'
-        GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
-        GIT_BRANCH = 'master'
         EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                script {
-                    retry(3) {
-                        // Clone the GitHub repository to the workspace with credentials
-                        git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_BRANCH}", credentialsId: "${env.GIT_CREDENTIALS_ID}"
-                    }
-                }
-            }
-        }
 
         stage('Check Python Version') {
             steps {
                 script {
-                    // Ensure Python 3 is available
                     sh 'python3 --version'
                 }
             }
@@ -35,7 +20,6 @@ pipeline {
         stage('Install Python3-venv') {
             steps {
                 script {
-                    // Ensure python3-venv and python3-venv are installed
                     sh '''
                         if ! dpkg -l | grep -q python3-venv; then
                             apt-get update
@@ -59,7 +43,6 @@ pipeline {
         stage('Setup Virtual Environment') {
             steps {
                 script {
-                    // Create virtual environment if it doesn't exist
                     if (!fileExists("${env.VENV_DIR}/bin/activate")) {
                         sh "python3 -m venv ${env.VENV_DIR}"
 			sh ". ${env.VENV_DIR}/bin/activate"
@@ -71,7 +54,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install dependencies from requirements.txt
                     sh "${env.VENV_DIR}/bin/pip install -r ${env.REQUIREMENTS}"
                 }
             }
@@ -90,7 +72,6 @@ pipeline {
         stage('Lint Code') {
             steps {
                 script {
-                    // Run flake8 for linting
                     sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=150"
                 }
             }
@@ -101,7 +82,6 @@ pipeline {
     post {
         always {
             script {
-                // Cleaning up after pipeline execution
 		        sh "rm -rf ${env.VENV_DIR}"
 
                 sh 'docker compose -f docker-compose-blue.yml down --volumes --remove-orphans'
