@@ -4,10 +4,23 @@ pipeline {
     environment {
         VENV_DIR = '.venv'
         REQUIREMENTS = 'requirements.txt'
+        PYTHONPATH = "${env.WORKSPACE}/src"
+        GIT_CREDENTIALS_ID = 'github-pat'
+        GIT_REPOSITORY_URL = 'https://github.com/b0mbix/pis24z-flashcards-app.git'
+        GIT_BRANCH = 'master'
         EMAIL_RECIPIENT = 'jakub.baba.stud@pw.edu.pl'
     }
 
     stages {
+        stage('Checkout Code') {
+            steps {
+                script {
+                    retry(3) {
+                        git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_BRANCH}", credentialsId: "${env.GIT_CREDENTIALS_ID}"
+                    }
+                }
+            }
+        }
 
         stage('Check Python Version') {
             steps {
