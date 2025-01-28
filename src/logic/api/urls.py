@@ -29,9 +29,6 @@ urlpatterns = [
     path('flashcard-sets/tags/add/', views.add_flashcard_set_tag, name='add_flashcard_set_tag'),
     path('flashcard-sets/tags/delete/', views.delete_flashcard_set_tag, name='delete_flashcard_set_tag'),
 
-    path('flashcard-set-favorite/add/', views.add_flashcard_set_to_favorites, name='add_flashcard_set_to_favorites'),
-    path('flashcard-set-favorite/<int:user_id>/delete/', views.remove_flashcard_set_from_favorites, name='delete_flashcard_set_from_favorites'),
-
     path('flashcard-favorites/add/', views.add_flashcard_to_favorites, name='add_flashcard_to_favorites'),
     path('flashcard-favorites/<int:user_id>/delete/', views.remove_flashcard_from_favorites, name='delete_flashcard_from_favorites'),
 
@@ -63,8 +60,16 @@ urlpatterns = [
         views.get_flashcard_sets_favorites_by_user,
         name='get_flashcard_sets_favorites_by_user'
     ),
-    path('flashcard-sets/<int:set_id>/set-favorite/', views.set_flashcard_set_favorite, name='set_flashcard_set_favorite'),
-    path('flashcard-sets/<int:set_id>/unset-favorite/', views.unset_flashcard_set_favorite, name='unset_flashcard_set_favorite'),
+    path(
+        'flashcard-sets/<int:set_id>/set-favorite/',
+        views.set_flashcard_set_favorite,
+        name='set_flashcard_set_favorite'
+    ),
+    path(
+        'flashcard-sets/<int:set_id>/unset-favorite/',
+        views.unset_flashcard_set_favorite,
+        name='unset_flashcard_set_favorite'
+    ),
 
     path(
         'study/1/set/<int:set_id>/get-shuffled/',

@@ -277,46 +277,6 @@ def delete_flashcard_set_tag(request, set_id, tag_id):
         return Response({"error": "Tag not found in this flashcard set"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# FlashcardSetFavaorite
-
-@api_view(['POST'])
-def add_flashcard_set_to_favorites(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-
-        flashcard_set_favorite, created = FlashcardSetFavorite.objects.get_or_create(user=user, set=flashcard_set)
-
-        if created:
-            return Response({"message": "Flashcard set added to favorites"}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"message": "Flashcard set already in favorites"}, status=status.HTTP_400_BAD_REQUEST)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['DELETE'])
-def remove_flashcard_set_from_favorites(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-
-        flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
-        flashcard_set_favorite.delete()
-
-        return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSetFavorite.DoesNotExist:
-        return Response({"error": "Flashcard set not found in favorites"}, status=status.HTTP_404_NOT_FOUND)
-
-
 # FlashcardFavorite
 
 @api_view(['POST'])
