@@ -24,6 +24,7 @@ pytest-django = "^4.9.0"
 pytest-cov = "^6.0.0"
 drf-yasg = "*"
 djangorestframework-simplejwt = "^5.4.0"
+minio = "^7.2.15"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.9.0"
