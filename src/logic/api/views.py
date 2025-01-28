@@ -620,29 +620,13 @@ def delete_flashcard_stats_percent(request, stats_id):
 # custom flashcard-sets
 ##############################
 
-# it will have to be replaced
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_public_flashcard_sets(request):
-#     user = request.user
-#     flashcard_sets = FlashcardSet.objects.filter(is_public=True)
-#     serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
-#     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_public_flashcard_sets(request):
+    user = request.user
     flashcard_sets = FlashcardSet.objects.filter(is_public=True)
-    response = []
-    for flashcard_set in flashcard_sets:
-        response.append({
-            "id": flashcard_set.id,
-            "name": flashcard_set.name,
-            "description": flashcard_set.description,
-            "flashcards_count": flashcard_set.flashcards.count(),
-            "owner_id": flashcard_set.user.id,
-        })
-    return Response(response, status=status.HTTP_200_OK)
+    serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
