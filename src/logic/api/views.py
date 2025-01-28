@@ -1,6 +1,7 @@
 # from django.http import JsonResponse
 # from rest_framework.views import APIView
-from .serializers import LoginSerializer, RegisterSerializer
+import random
+from .serializers import FlashcardSetSerializer, LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -8,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from datetime import datetime, timedelta
+from django.db.models import Max
 from .models import (
     User,
     FlashcardSet,
@@ -65,68 +67,24 @@ def test_auth(request):
     return Response({"message": "You are authenticated!"}, status=200)
 
 
-# User
-
-@api_view(['POST'])
-def add_user(request):
-    try:
-        data = request.data
-        user = User.objects.create(
-            username=data.get('username'),
-            password=data.get('password'),
-        )
-        return Response({"message": "User created successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        return Response({
-            "username": user.username,
-        }, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['PUT'])
-def update_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        data = request.data
-        user.username = data.get('username', user.username)
-        user.password = data.get('password', user.password)
-        user.save()
-        return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['DELETE'])
-def delete_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user.delete()
-        return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
 # FlashcardSet
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_flashcard_set(request):
+    user = request.user
     try:
         data = request.data
-        user = User.objects.get(id=data.get('user_id'))
         flashcard_set = FlashcardSet.objects.create(
             user=user,
             name=data.get('name'),
-            description=data.get('description', '')
+            description=data.get('description', ''),
+            is_public=data.get('is_public', False),
         )
-        return Response({"message": "Flashcard set created successfully", "set_id": flashcard_set.id}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "Flashcard set created successfully", "set_id": flashcard_set.id},
+            status=status.HTTP_201_CREATED
+        )
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -191,10 +149,14 @@ def delete_flashcard_set(request, set_id):
 # Flashcard
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_flashcard(request):
     try:
         data = request.data
+        user = request.user
         flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
+        if flashcard_set.user != user:
+            return Response({"error": "You are not the owner of this flashcard set"}, status=status.HTTP_403_FORBIDDEN)
         flashcard = Flashcard.objects.create(
             set=flashcard_set,
             question=data.get('question'),
@@ -284,72 +246,6 @@ def delete_tag(request, tag_id):
         return Response({"message": "Tag deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Tag.DoesNotExist:
         return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-# FlashcardSetTag
-
-@api_view(['POST'])
-def add_flashcard_set_tag(request):
-    try:
-        data = request.data
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        tag = Tag.objects.get(id=data.get('tag_id'))
-        flashcard_set_tag = FlashcardSetTag.objects.create(set=flashcard_set, tag=tag)
-        return Response({"message": "Flashcard set tagged successfully", "id": flashcard_set_tag.id}, status=status.HTTP_201_CREATED)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
-    except Tag.DoesNotExist:
-        return Response({"error": "Tag not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['DELETE'])
-def delete_flashcard_set_tag(request, set_id, tag_id):
-    try:
-        flashcard_set_tag = FlashcardSetTag.objects.get(set_id=set_id, tag_id=tag_id)
-        flashcard_set_tag.delete()
-        return Response({"message": "Flashcard set tag deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    except FlashcardSetTag.DoesNotExist:
-        return Response({"error": "Tag not found in this flashcard set"}, status=status.HTTP_404_NOT_FOUND)
-
-
-# FlashcardSetFavaorite
-
-@api_view(['POST'])
-def add_flashcard_set_to_favorites(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-
-        flashcard_set_favorite, created = FlashcardSetFavorite.objects.get_or_create(user=user, set=flashcard_set)
-
-        if created:
-            return Response({"message": "Flashcard set added to favorites"}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"message": "Flashcard set already in favorites"}, status=status.HTTP_400_BAD_REQUEST)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['DELETE'])
-def remove_flashcard_set_from_favorites(request):
-    try:
-        data = request.data
-        user = User.objects.get(id=data.get('user_id'))
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-
-        flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
-        flashcard_set_favorite.delete()
-
-        return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_404_NOT_FOUND)
-    except FlashcardSetFavorite.DoesNotExist:
-        return Response({"error": "Flashcard set not found in favorites"}, status=status.HTTP_404_NOT_FOUND)
 
 
 # FlashcardFavorite
@@ -606,3 +502,210 @@ def delete_flashcard_stats_percent(request, stats_id):
         return Response({"message": "FlashcardStatsPercent deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+##############################
+# flashcard sets endpoints
+##############################
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_public_flashcard_sets(request):
+    user = request.user
+    flashcard_sets = FlashcardSet.objects.filter(is_public=True)
+    serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcard_sets_by_user(request):
+    user = request.user
+    flashcard_sets = FlashcardSet.objects.filter(user=user)
+    serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcard_sets_favorites_by_user(request):
+    user = request.user
+    flashcard_sets = FlashcardSetFavorite.objects.filter(user=user)
+    serializer = FlashcardSetSerializer(flashcard_sets, many=True, context={'user': user})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def set_flashcard_set_favorite(request, set_id):
+    user = request.user
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set_favorite, created = FlashcardSetFavorite.objects.get_or_create(user=user, set=flashcard_set)
+    if created:
+        return Response({"message": "Flashcard set added to favorites"}, status=status.HTTP_201_CREATED)
+    return Response({"message": "Flashcard set already in favorites"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unset_flashcard_set_favorite(request, set_id):
+    user = request.user
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
+    flashcard_set_favorite.delete()
+    return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_tag_to_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tag_id = request.data.get('tag_id')
+    tag = Tag.objects.get(id=tag_id)
+    flashcard_set_tag, created = FlashcardSetTag.objects.get_or_create(set=flashcard_set, tag=tag)
+    if created:
+        return Response({"message": "Tag added to flashcard set"}, status=status.HTTP_201_CREATED)
+    return Response({"message": "Tag already in flashcard set"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_tag_from_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tag_id = request.data.get('tag_id')
+    tag = Tag.objects.get(id=tag_id)
+    flashcard_set_tag = FlashcardSetTag.objects.get(set=flashcard_set, tag=tag)
+    flashcard_set_tag.delete()
+    return Response({"message": "Tag deleted from flashcard set"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_tags_for_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tags = flashcard_set.flashcard_set_tags.all()
+    return Response(
+        {
+            "tags": [
+                {
+                    "id": tag.tag.id,
+                    "name": tag.tag.name
+                } for tag in tags
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+##############################
+# study endpoints
+##############################
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_shuffled_flashcards(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcards = list(flashcard_set.flashcards.all())
+    random.shuffle(flashcards)
+    return Response(
+        {
+            "flashcards": [
+                {
+                    "id": flashcard.id,
+                    "question": flashcard.question,
+                    "answer": flashcard.answer
+                } for flashcard in flashcards
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def increment_flashcard_set_views(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    flashcard_set.views_count += 1
+    flashcard_set.save()
+    ids = request.data.get('ids', [])
+    flashcards = Flashcard.objects.filter(id__in=ids)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsSimple.objects.get_or_create(user=request.user, flashcard=flashcard)
+        flashcard_stats.view_count += 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard set views incremented"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def reset_flashcard_stats_stages(request, set_id):
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsStages.objects.get_or_create(user=request.user, flashcard=flashcard)
+        flashcard_stats.view_count = 0
+        flashcard_stats.stage = 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard stats stages reset"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcards_for_study(request, set_id):
+    flashcards = Flashcard.objects.filter(
+        set_id=set_id,
+        flashcardstatsstages__user=request.user,
+        flashcardstatsstages__learned=False
+    )
+    return Response(
+        {
+            "flashcards": [
+                {
+                    "id": flashcard.id,
+                    "question": flashcard.question,
+                    "answer": flashcard.answer
+                } for flashcard in flashcards
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_flashcard_stages(request, set_id):
+    learned = request.data.get('learned', [])
+    not_learned = request.data.get('not_learned', [])
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsStages.objects.get_or_create(user=request.user, flashcard=flashcard)
+        if flashcard.id in learned:
+            flashcard_stats.learned = True
+        elif flashcard.id in not_learned:
+            flashcard_stats.stage += 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard stages updated"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_stages_study_summary(request, set_id):
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    stages = {
+        "flashcards_amount": flashcards.count(),
+        "stages": []
+    }
+    max_stage = flashcards.aggregate(max_stage=Max('flashcardstatsstages__stage'))['max_stage']
+    for stage in range(1, max_stage + 1):
+        learned = flashcards.filter(
+            flashcardstatsstages__user=request.user,
+            flashcardstatsstages__stage=stage,
+            flashcardstatsstages__learned=True
+        ).count()
+        not_learned = flashcards.filter(
+            flashcardstatsstages__user=request.user,
+            flashcardstatsstages__stage=stage,
+            flashcardstatsstages__learned=False
+        ).count()
+        stages["stages"].append({"learned_amount": learned, "not_learned_amount": not_learned})
+    return Response(stages, status=status.HTTP_200_OK)
