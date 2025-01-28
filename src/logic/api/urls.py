@@ -9,11 +9,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('test-auth/', views.test_auth, name='test_auth'),
 
-    path('users/add/', views.add_user, name='add_user'),
-    path('users/<int:user_id>/get/', views.get_user, name='get_user'),
-    path('users/<int:user_id>/update/', views.update_user, name='update_user'),
-    path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
-
     path('flashcard-sets/add/', views.add_flashcard_set, name='add_flashcard_set'),
     path('flashcard-sets/all/', views.get_flashcard_sets, name='get_flashcard_sets'),
     path('flashcard-sets/<int:set_id>/get/', views.get_flashcard_set, name='get_flashcard_set'),

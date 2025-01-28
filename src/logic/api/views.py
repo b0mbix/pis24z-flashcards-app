@@ -67,55 +67,6 @@ def test_auth(request):
     return Response({"message": "You are authenticated!"}, status=200)
 
 
-# User
-
-@api_view(['POST'])
-def add_user(request):
-    try:
-        data = request.data
-        user = User.objects.create(
-            username=data.get('username'),
-            password=data.get('password'),
-        )
-        return Response({"message": "User created successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        return Response({
-            "username": user.username,
-        }, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['PUT'])
-def update_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        data = request.data
-        user.username = data.get('username', user.username)
-        user.password = data.get('password', user.password)
-        user.save()
-        return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['DELETE'])
-def delete_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user.delete()
-        return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
 # FlashcardSet
 
 @api_view(['POST'])
