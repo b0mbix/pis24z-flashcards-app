@@ -112,7 +112,7 @@ class FlashcardStatsSimple(models.Model):
 
     class Meta:
         db_table = 'flashcardstatssimple'
-        unique_together = ('id', 'flashcard')  # Prevent duplicate stats for the same stats and flashcard
+        unique_together = ('user', 'flashcard')  
 
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.id} (Views: {self.view_count})"
@@ -127,7 +127,7 @@ class FlashcardStatsStages(models.Model):
 
     class Meta:
         db_table = 'flashcardstatsstages'
-        unique_together = ('user', 'flashcard')  # Zapobiega duplikatom dla użytkownika i fiszki
+        unique_together = ('id', 'flashcard')  # Zapobiega duplikatom dla użytkownika i fiszki
 
     def __str__(self):
         return f"{self.user.username} - {self.flashcard.id} (Stage: {self.stage}, Learned: {self.learned})"
