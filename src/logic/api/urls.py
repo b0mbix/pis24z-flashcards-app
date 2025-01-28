@@ -79,4 +79,24 @@ urlpatterns = [
         views.increment_flashcard_set_views,
         name='increment_flashcard_set_views'
     ),
+    path(
+        'study/2/set/<int:set_id>/reset-stages/',
+        views.reset_flashcard_stats_stages,
+        name='reset_flashcard_stats_stages'
+    ),
+    path(
+        'study/2/set/<int:set_id>/get-flashcards/',
+        views.get_flashcards_for_study,
+        name='get_flashcards_for_study'
+    ),
+    path(
+        'study/2/set/<int:set_id>/set-stage-status/',
+        views.update_flashcard_stages,
+        name='update_flashcard_stages'
+    ),
+    path(
+        'study/2/set/<int:set_id>/get-study-summary/',
+        views.get_stages_study_summary,
+        name='get_stages_study_summary'
+    )
 ]

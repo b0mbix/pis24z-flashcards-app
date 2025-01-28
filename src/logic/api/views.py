@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from datetime import datetime, timedelta
+from django.db.models import Max
 from .models import (
     User,
     FlashcardSet,
@@ -647,6 +648,11 @@ def get_flashcard_sets_favorites_by_user(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+##############################
+# study endpoints
+##############################
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_shuffled_flashcards(request, set_id):
@@ -656,7 +662,11 @@ def get_shuffled_flashcards(request, set_id):
     return Response(
         {
             "flashcards": [
-                {"id": flashcard.id, "question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards
+                {
+                    "id": flashcard.id,
+                    "question": flashcard.question,
+                    "answer": flashcard.answer
+                } for flashcard in flashcards
             ]
         },
         status=status.HTTP_200_OK
@@ -676,3 +686,69 @@ def increment_flashcard_set_views(request, set_id):
         flashcard_stats.view_count += 1
         flashcard_stats.save()
     return Response({"message": "Flashcard set views incremented"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def reset_flashcard_stats_stages(request, set_id):
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsStages.objects.get_or_create(user=request.user, flashcard=flashcard)
+        flashcard_stats.view_count = 0
+        flashcard_stats.stage = 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard stats stages reset"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_flashcards_for_study(request, set_id):
+    flashcards = Flashcard.objects.filter(
+        set_id=set_id,
+        flashcardstatsstages__user=request.user,
+        flashcardstatsstages__learned=False
+    )
+    return Response(
+        {
+            "flashcards": [
+                {
+                    "id": flashcard.id,
+                    "question": flashcard.question,
+                    "answer": flashcard.answer
+                } for flashcard in flashcards
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_flashcard_stages(request, set_id):
+    learned = request.data.get('learned', [])
+    not_learned = request.data.get('not_learned', [])
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    for flashcard in flashcards:
+        flashcard_stats, created = FlashcardStatsStages.objects.get_or_create(user=request.user, flashcard=flashcard)
+        if flashcard.id in learned:
+            flashcard_stats.learned = True
+        elif flashcard.id in not_learned:
+            flashcard_stats.stage += 1
+        flashcard_stats.save()
+    return Response({"message": "Flashcard stages updated"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_stages_study_summary(request, set_id):
+    flashcards = Flashcard.objects.filter(set_id=set_id)
+    stages = {
+        "flashcards_amount": flashcards.count(),
+        "stages": []
+    }
+    max_stage = flashcards.aggregate(max_stage=Max('flashcardstatsstages__stage'))['max_stage']
+    for stage in range(1, max_stage + 1):
+        learned = flashcards.filter(flashcardstatsstages__user=request.user, flashcardstatsstages__stage=stage, flashcardstatsstages__learned=True).count()
+        not_learned = flashcards.filter(flashcardstatsstages__user=request.user, flashcardstatsstages__stage=stage, flashcardstatsstages__learned=False).count()
+        stages["stages"].append({"learned_amount": learned, "not_learned_amount": not_learned})
+    return Response(stages, status=status.HTTP_200_OK)
