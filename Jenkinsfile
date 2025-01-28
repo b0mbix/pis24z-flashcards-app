@@ -77,7 +77,7 @@ pipeline {
                 script {
 		        // sh 'docker compose -f docker-compose-blue.yml exec logic-blue pytest'
                 // sh 'docker compose -f docker-compose-blue.yml exec flutter-blue flutter test'
-
+                    sh ' echo testing'
                 }
             }
         }
@@ -86,6 +86,7 @@ pipeline {
             steps {
                 script {
                     // sh "${env.VENV_DIR}/bin/flake8 src/ --max-line-length=300"
+                    sh ' echo testing'
                 }
             }
         }
