@@ -68,4 +68,15 @@ urlpatterns = [
         views.get_flashcard_sets_favorites_by_user,
         name='get_flashcard_sets_favorites_by_user'
     ),
+
+    path(
+        'study/1/set/<int:set_id>/get-shuffled/',
+        views.get_shuffled_flashcards,
+        name='get_shuffled_flashcards'
+    ),
+    path(
+        'study/1/set/<int:set_id>/increment-views/',
+        views.increment_flashcard_set_views,
+        name='increment_flashcard_set_views'
+    ),
 ]
