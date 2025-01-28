@@ -64,8 +64,8 @@ services:
       DB_PASSWORD: postgres
     ports:
       - "8000:8000"
-    # volumes:
-    #  - logic_data:/app
+    volumes:
+     - logic_data:/app
     command: sh -c "sleep 5 && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - postgres
@@ -102,4 +102,4 @@ volumes:
   es_data:
   minio_data:
   flutter_data:
-  # logic_data:
+  logic_data:
