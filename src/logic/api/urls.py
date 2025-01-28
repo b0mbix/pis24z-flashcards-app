@@ -25,10 +25,6 @@ urlpatterns = [
     path('tags/<int:tag_id>/update/', views.update_tag, name='update_tag'),
     path('tags/<int:tag_id>/delete/', views.delete_tag, name='delete_tag'),
 
-
-    path('flashcard-sets/tags/add/', views.add_flashcard_set_tag, name='add_flashcard_set_tag'),
-    path('flashcard-sets/tags/delete/', views.delete_flashcard_set_tag, name='delete_flashcard_set_tag'),
-
     path('flashcard-favorites/add/', views.add_flashcard_to_favorites, name='add_flashcard_to_favorites'),
     path('flashcard-favorites/<int:user_id>/delete/', views.remove_flashcard_from_favorites, name='delete_flashcard_from_favorites'),
 
@@ -69,6 +65,21 @@ urlpatterns = [
         'flashcard-sets/<int:set_id>/unset-favorite/',
         views.unset_flashcard_set_favorite,
         name='unset_flashcard_set_favorite'
+    ),
+    path(
+        'flashcard-sets/<int:set_id>/tags/add/',
+        views.add_tag_to_flashcard_set,
+        name='add_tag_to_flashcard_set'
+    ),
+    path(
+        'flashcard-sets/<int:set_id>/tags/delete/',
+        views.delete_tag_from_flashcard_set,
+        name='delete_tag_from_flashcard_set'
+    ),
+    path(
+        'flashcard-sets/<int:set_id>/get-tags/',
+        views.get_tags_for_flashcard_set,
+        name='get_tags_for_flashcard_set'
     ),
 
     path(

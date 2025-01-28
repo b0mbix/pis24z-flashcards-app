@@ -255,32 +255,6 @@ def delete_tag(request, tag_id):
         return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# FlashcardSetTag
-
-@api_view(['POST'])
-def add_flashcard_set_tag(request):
-    try:
-        data = request.data
-        flashcard_set = FlashcardSet.objects.get(id=data.get('set_id'))
-        tag = Tag.objects.get(id=data.get('tag_id'))
-        flashcard_set_tag = FlashcardSetTag.objects.create(set=flashcard_set, tag=tag)
-        return Response({"message": "Flashcard set tagged successfully", "id": flashcard_set_tag.id}, status=status.HTTP_201_CREATED)
-    except FlashcardSet.DoesNotExist:
-        return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
-    except Tag.DoesNotExist:
-        return Response({"error": "Tag not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['DELETE'])
-def delete_flashcard_set_tag(request, set_id, tag_id):
-    try:
-        flashcard_set_tag = FlashcardSetTag.objects.get(set_id=set_id, tag_id=tag_id)
-        flashcard_set_tag.delete()
-        return Response({"message": "Flashcard set tag deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    except FlashcardSetTag.DoesNotExist:
-        return Response({"error": "Tag not found in this flashcard set"}, status=status.HTTP_404_NOT_FOUND)
-
-
 # FlashcardFavorite
 
 @api_view(['POST'])
@@ -587,6 +561,47 @@ def unset_flashcard_set_favorite(request, set_id):
     flashcard_set_favorite = FlashcardSetFavorite.objects.get(user=user, set=flashcard_set)
     flashcard_set_favorite.delete()
     return Response({"message": "Flashcard set removed from favorites"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_tag_to_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tag_id = request.data.get('tag_id')
+    tag = Tag.objects.get(id=tag_id)
+    flashcard_set_tag, created = FlashcardSetTag.objects.get_or_create(set=flashcard_set, tag=tag)
+    if created:
+        return Response({"message": "Tag added to flashcard set"}, status=status.HTTP_201_CREATED)
+    return Response({"message": "Tag already in flashcard set"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_tag_from_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tag_id = request.data.get('tag_id')
+    tag = Tag.objects.get(id=tag_id)
+    flashcard_set_tag = FlashcardSetTag.objects.get(set=flashcard_set, tag=tag)
+    flashcard_set_tag.delete()
+    return Response({"message": "Tag deleted from flashcard set"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_tags_for_flashcard_set(request, set_id):
+    flashcard_set = FlashcardSet.objects.get(id=set_id)
+    tags = flashcard_set.flashcard_set_tags.all()
+    return Response(
+        {
+            "tags": [
+                {
+                    "id": tag.tag.id,
+                    "name": tag.tag.name
+                } for tag in tags
+            ]
+        },
+        status=status.HTTP_200_OK
+    )
 
 
 ##############################
