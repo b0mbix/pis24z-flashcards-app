@@ -4,7 +4,6 @@ from api.models import (Flashcard, FlashcardFavorite, FlashcardSet,
                         FlashcardSetTag, FlashcardStatsPercent,
                         FlashcardStatsSimple, FlashcardStatsStages, Tag)
 from django.contrib.auth.models import User
-
 from django.db import connections
 from django.db.utils import IntegrityError
 
@@ -209,7 +208,7 @@ def test_flashcard_stats_percent_unique_constraint():
         view_count=2, 
         learning_stage="still_learning"
         )
-
+    
     # Próba stworzenia duplikatu powinna rzucić wyjątek
     with pytest.raises(IntegrityError):
         FlashcardStatsPercent.objects.create(
@@ -316,5 +315,6 @@ def test_flashcard_stats_percent():
     assert stats.flashcard == flashcard
     assert stats.view_count == 2
     assert stats.learning_stage == "still_learning"
-
-    assert str(stats) == f"{user.username} - {flashcard.id} (Stage: {stats.learning_stage})"
+    assert str(stats) == (f"{user.username} - {flashcard.id} "
+                          f"(Stage: {stats.learning_stage})"
+                          )
