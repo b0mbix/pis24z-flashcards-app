@@ -151,3 +151,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 FIXTURE_DIRS = [
     os.path.join(BASE_DIR, "api/fixtures/")
 ]
+
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+MINIO_STORAGE_ENDPOINT = "minio:9000"
+MINIO_STORAGE_ACCESS_KEY = "user"
+MINIO_STORAGE_SECRET_KEY = "password"
+
+MINIO_STORAGE_MEDIA_BUCKET_NAME = "flashcards"

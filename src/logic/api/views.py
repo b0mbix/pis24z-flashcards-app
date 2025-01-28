@@ -1,4 +1,4 @@
-# from django.http import JsonResponse
+from django.http import JsonResponse
 # from rest_framework.views import APIView
 from .serializers import LoginSerializer, RegisterSerializer
 from rest_framework.response import Response
@@ -6,6 +6,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.views.decorators.csrf import csrf_exempt
+from minio import Minio
+from minio.error import S3Error
+import os
 
 from datetime import datetime, timedelta
 from .models import (
@@ -613,3 +619,64 @@ def delete_flashcard_stats_percent(request, stats_id):
         return Response({"message": "FlashcardStatsPercent deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except FlashcardStatsPercent.DoesNotExist:
         return Response({"error": "FlashcardStatsPercent not found"}, status=status.HTTP_404_NOT_FOUND)
+
+client = Minio(
+    endpoint="minio:9000",
+    access_key="user",
+    secret_key="password",
+    secure=False
+)
+
+@csrf_exempt
+def upload_flashcard_image(request, flashcard_id):
+    if request.method == "POST" and request.FILES.get("image"):
+        file = request.FILES["image"]
+        file_name = f"{flashcard_id}.jpg"
+        bucket_name = "flashcards"
+
+        try:
+            client.make_bucket(bucket_name)
+        except Exception as e:
+            pass
+
+        try:
+            client.put_object(
+                bucket_name,
+                file_name,
+                file,
+                file.size,
+                content_type=file.content_type
+            )
+            file_url = f"http://localhost:9000/{bucket_name}/{file_name}"
+            return JsonResponse({"message": "Image uploaded", "url": file_url})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+@csrf_exempt
+def get_flashcard_image(request, flashcard_id):
+    file_name = f"{flashcard_id}.jpg"
+    bucket_name = "flashcards"
+
+    try:
+        presigned_url = client.presigned_get_object(bucket_name, file_name)
+        return JsonResponse({"url": presigned_url})
+    except S3Error as e:
+        return JsonResponse({"error": "Image not found", "details": str(e)}, status=404)
+
+
+@csrf_exempt
+def delete_flashcard_image(request, flashcard_id):
+    if request.method == "DELETE":
+        file_name = f"{flashcard_id}.jpg"
+        bucket_name = "flashcards"
+
+        try:
+            client.remove_object(bucket_name, file_name)
+            return JsonResponse({"message": "Image deleted"})
+        except Exception:
+            return JsonResponse({"error": "Image not found"}, status=404)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

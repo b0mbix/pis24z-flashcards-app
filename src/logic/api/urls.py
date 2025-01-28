@@ -58,5 +58,9 @@ urlpatterns = [
     path('flashcard-stats-percent/add/', views.add_flashcard_stats_percent, name='add_flashcard_stats_percent'),
     path('flashcard-stats-percent/<int:stats_id>/get/', views.get_flashcard_stats_percent, name='get_flashcard_stats_percent'),
     path('flashcard-stats-percent/<int:stats_id>/update/', views.update_flashcard_stats_percent, name='update_flashcard_stats_percent'),
-    path('flashcard-stats-percent/<int:stats_id>/delete/', views.delete_flashcard_stats_percent, name='delete_flashcard_stats_percent')
+    path('flashcard-stats-percent/<int:stats_id>/delete/', views.delete_flashcard_stats_percent, name='delete_flashcard_stats_percent'),
+
+    path("flashcard-image/<int:flashcard_id>/upload/", views.upload_flashcard_image, name="upload_image"),
+    path("flashcard-image/<int:flashcard_id>/get/", views.get_flashcard_image, name="get_image"),
+    path("flashcard-image/<int:flashcard_id>/delete/", views.delete_flashcard_image, name="delete_image"),
 ]
