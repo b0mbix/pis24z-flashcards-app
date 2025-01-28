@@ -186,7 +186,7 @@ def test_flashcard_stats_simple_str():
         )
 
     expected_str = (f"{user.username} - {flashcard.id} "
-                    f" (Views: {stats.view_count})"
+                    f"(Views: {stats.view_count})"
                     )
     assert str(stats) == expected_str
 
@@ -289,7 +289,7 @@ def test_flashcard_stats_stages():
     assert stats.stage == 2
     assert stats.learned is True
     assert str(stats) == (f"{user.username} - {flashcard.id} " 
-                          f" (Stage: {stats.stage}, Learned: {stats.learned})"
+                          f"(Stage: {stats.stage}, Learned: {stats.learned})"
                           )
 
 
