@@ -672,7 +672,7 @@ def get_shuffled_flashcards(request, set_id):
     return Response(
         {
             "flashcards": [
-                {"question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards
+                {"id": flashcard.id, "question": flashcard.question, "answer": flashcard.answer} for flashcard in flashcards
             ]
         },
         status=status.HTTP_200_OK
