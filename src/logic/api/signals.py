@@ -4,6 +4,7 @@ from django.dispatch import receiver
 import os
 from django.conf import settings
 import glob
+from minio import Minio
 
 @receiver(post_migrate)
 def load_fixtures(sender, **kwargs):
@@ -12,3 +13,14 @@ def load_fixtures(sender, **kwargs):
 
     for fixture in fixtures:
         call_command('loaddata', fixture)
+
+@receiver(post_migrate)
+def minio_bucket(sender, **kwargs):
+    client = Minio(
+        "minio:9000", 
+        access_key="user",
+        secret_key="password",
+        secure=False 
+    )
+
+    client.make_bucket('flashcards')
