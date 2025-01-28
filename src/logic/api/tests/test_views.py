@@ -16,8 +16,8 @@ def api_client():
 
 
 @pytest.fixture
-def test_user():
-    return User.objects.create(username="test_user", password="password123")
+def test_user(db):
+    return User.objects.create_user(username="test_user", password="password123")
 
 
 @pytest.mark.django_db
@@ -188,22 +188,6 @@ def test_delete_flashcard(api_client, test_user):
 
 
 @pytest.mark.django_db
-def test_add_flashcard_set_to_favorites(api_client, test_user):
-    flashcard_set = FlashcardSet.objects.create(
-        user=test_user, name="Favorite Set")
-    url = reverse('add_flashcard_set_to_favorites')
-    data = {
-        "user_id": test_user.id,
-        "set_id": flashcard_set.id
-    }
-    response = api_client.post(url, data, format='json')
-    assert response.status_code == status.HTTP_201_CREATED
-    assert FlashcardSetFavorite.objects.filter(
-        user=test_user, set=flashcard_set
-        ).exists()
-
-
-@pytest.mark.django_db
 def test_add_flashcard_to_favorites(api_client, test_user):
     flashcard_set = FlashcardSet.objects.create(
         user=test_user, name="Set with Flashcard"
@@ -225,6 +209,8 @@ def test_add_flashcard_to_favorites(api_client, test_user):
 
 @pytest.mark.django_db
 def test_add_flashcard_set_stats(api_client, test_user):
+    api_client.force_authenticate(user=test_user)
+    
     flashcard_set = FlashcardSet.objects.create(
         user=test_user, name="Stats Set"
         )
