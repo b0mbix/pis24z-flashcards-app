@@ -209,18 +209,11 @@ def add_flashcard(request):
 def delete_flashcard(request, flashcard_id):
     try:
         flashcard = Flashcard.objects.get(id=flashcard_id)
-
-        try:
-            set_id = flashcard.set.id
-            flashcard_set = FlashcardSet.objects.get(id=set_id)
-            flashcard_set.updated_at = datetime.now()
-            flashcard_set.save()
-        except FlashcardSet.DoesNotExist:
-            return Response({"error": "Flashcard set not found"}, status=status.HTTP_400_BAD_REQUEST)
-
+        flashcard.delete()
         return Response({"message": "Flashcard deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Flashcard.DoesNotExist:
         return Response({"error": "Flashcard not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 @api_view(['GET'])
